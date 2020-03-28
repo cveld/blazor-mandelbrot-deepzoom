@@ -1,0 +1,37 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29924.181
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlazorMandelbrotDeepzoom.Server", "BlazorMandelbrotDeepzoom\Server\BlazorMandelbrotDeepzoom.Server.csproj", "{66F83BF4-4BEE-4A1D-8D88-BDAB3EA48565}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlazorMandelbrotDeepzoom.Client", "BlazorMandelbrotDeepzoom\Client\BlazorMandelbrotDeepzoom.Client.csproj", "{73B4D248-C438-486E-B3F0-47F3980747E6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlazorMandelbrotDeepzoom.Shared", "BlazorMandelbrotDeepzoom\Shared\BlazorMandelbrotDeepzoom.Shared.csproj", "{FC769F4D-54D2-4897-8616-E7C577733BC5}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{66F83BF4-4BEE-4A1D-8D88-BDAB3EA48565}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{66F83BF4-4BEE-4A1D-8D88-BDAB3EA48565}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{66F83BF4-4BEE-4A1D-8D88-BDAB3EA48565}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{66F83BF4-4BEE-4A1D-8D88-BDAB3EA48565}.Release|Any CPU.Build.0 = Release|Any CPU
+		{73B4D248-C438-486E-B3F0-47F3980747E6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{73B4D248-C438-486E-B3F0-47F3980747E6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{73B4D248-C438-486E-B3F0-47F3980747E6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{73B4D248-C438-486E-B3F0-47F3980747E6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FC769F4D-54D2-4897-8616-E7C577733BC5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FC769F4D-54D2-4897-8616-E7C577733BC5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FC769F4D-54D2-4897-8616-E7C577733BC5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FC769F4D-54D2-4897-8616-E7C577733BC5}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {B14B3245-733C-4D23-A4FE-D60005C56A00}
+	EndGlobalSection
+EndGlobal
