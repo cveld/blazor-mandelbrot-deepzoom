@@ -1,0 +1,41 @@
+﻿@page "/canvas"
+@using Blazor.Extensions.Canvas.Canvas2D
+@using Blazor.Extensions.Canvas.WebGL
+@using Blazor.Extensions
+@using Mandelbrot
+@inject IJSRuntime JSRuntime
+<h3>Canvas</h3>
+<BECanvas Width="300" Height="400" @ref="_canvasReference"></BECanvas>
+
+<button @onclick="Generate">Generate</button>
+
+@code {
+    private Canvas2DContext _context;
+    private WebGLContext _webGLContext;
+
+    protected BECanvasComponent _canvasReference;
+    
+    private Mandelbrot mandelbrot;
+    public Canvas()
+    {
+        mandelbrot = new Mandelbrot(100, 100);
+    }
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        this._context = await this._canvasReference.CreateCanvas2DAsync();
+        await this._context.SetFillStyleAsync("green");
+
+        await this._context.FillRectAsync(10, 100, 100, 100);
+
+        await this._context.SetFontAsync("48px serif");
+        await this._context.StrokeTextAsync("Hello Blazor!!!", 10, 100);
+    }
+
+    public async Task Generate()
+    {
+
+        var result = mandelbrot.Generate(0, 0, 0);
+        var text =
+                await JSRuntime.InvokeAsync<string>("drawPixels", _canvasReference.Id, 0, 0, 100, 100, result);
+    }
+}

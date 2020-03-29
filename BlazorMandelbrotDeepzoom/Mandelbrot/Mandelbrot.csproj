@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="BigDecimalExtern.cs" />
+    <Compile Remove="BigDecimalJava.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="BigDecimalExtern.cs" />
+    <None Include="BigDecimalJava.cs" />
+  </ItemGroup>
+
+</Project>

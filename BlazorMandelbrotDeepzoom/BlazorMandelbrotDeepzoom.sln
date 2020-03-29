@@ -9,6 +9,12 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlazorMandelbrotDeepzoom.Cl
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlazorMandelbrotDeepzoom.Shared", "BlazorMandelbrotDeepzoom\Shared\BlazorMandelbrotDeepzoom.Shared.csproj", "{FC769F4D-54D2-4897-8616-E7C577733BC5}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mandelbrot", "Mandelbrot\Mandelbrot.csproj", "{27DF1403-AE8A-4B7F-BEF1-DA9FF52DD52C}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Blazor.Extensions.Canvas", "..\..\..\BlazorExtensions\Canvas\src\Blazor.Extensions.Canvas\Blazor.Extensions.Canvas.csproj", "{C90A418E-D0FF-400C-9605-BF22FCE2A8D3}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Blazor.Extensions.Canvas.JS", "..\..\..\BlazorExtensions\Canvas\src\Blazor.Extensions.Canvas.JS\Blazor.Extensions.Canvas.JS.csproj", "{3969A92A-17A0-4016-B7B0-88B23A0DDEBE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +33,18 @@ Global
 		{FC769F4D-54D2-4897-8616-E7C577733BC5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FC769F4D-54D2-4897-8616-E7C577733BC5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FC769F4D-54D2-4897-8616-E7C577733BC5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{27DF1403-AE8A-4B7F-BEF1-DA9FF52DD52C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{27DF1403-AE8A-4B7F-BEF1-DA9FF52DD52C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{27DF1403-AE8A-4B7F-BEF1-DA9FF52DD52C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{27DF1403-AE8A-4B7F-BEF1-DA9FF52DD52C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C90A418E-D0FF-400C-9605-BF22FCE2A8D3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C90A418E-D0FF-400C-9605-BF22FCE2A8D3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C90A418E-D0FF-400C-9605-BF22FCE2A8D3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C90A418E-D0FF-400C-9605-BF22FCE2A8D3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3969A92A-17A0-4016-B7B0-88B23A0DDEBE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3969A92A-17A0-4016-B7B0-88B23A0DDEBE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3969A92A-17A0-4016-B7B0-88B23A0DDEBE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3969A92A-17A0-4016-B7B0-88B23A0DDEBE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
