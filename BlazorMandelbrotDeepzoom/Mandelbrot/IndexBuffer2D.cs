@@ -110,7 +110,7 @@ public class IndexBuffer2D
 		return (float)mWidth/mHeight;
 	}	
 	
-	BufferedImage MakeTexture( IPalette aPalette, SuperSampleType aSuper_sample)
+	public BufferedImage MakeTexture( IPalette aPalette, SuperSampleType aSuper_sample)
 	{
 		BufferedImage image=null;
 		int x,y,i,j,k,l,m,n,o,p,q, w,h,y2;

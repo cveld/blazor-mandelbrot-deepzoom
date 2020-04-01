@@ -10,6 +10,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\Mandelbrot\Mandelbrot.csproj" />
     <ProjectReference Include="..\Client\BlazorMandelbrotDeepzoom.Client.csproj" />
     <ProjectReference Include="..\Shared\BlazorMandelbrotDeepzoom.Shared.csproj" />
   </ItemGroup>

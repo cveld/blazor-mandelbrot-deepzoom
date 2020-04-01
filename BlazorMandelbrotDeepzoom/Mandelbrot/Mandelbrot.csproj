@@ -6,12 +6,17 @@
 
   <ItemGroup>
     <Compile Remove="BigDecimalExtern.cs" />
-    <Compile Remove="BigDecimalJava.cs" />
+    <Compile Remove="BigDecimalsDParker\BigDecimalFromDouble.cs" />
+    <Compile Remove="Java.Math\MutableBigIntegerJava.cs" />
+    <Compile Remove="MutableBigIntegerJava.cs" />
+    <Compile Remove="SFTPalette.cs" />
   </ItemGroup>
 
   <ItemGroup>
     <None Include="BigDecimalExtern.cs" />
-    <None Include="BigDecimalJava.cs" />
+    <None Include="BigDecimalsDParker\BigDecimalFromDouble.cs" />
+    <None Include="Java.Math\MutableBigIntegerJava.cs" />
+    <None Include="SFTPalette.cs" />
   </ItemGroup>
 
 </Project>

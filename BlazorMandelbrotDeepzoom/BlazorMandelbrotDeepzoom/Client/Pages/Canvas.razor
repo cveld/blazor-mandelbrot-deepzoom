@@ -34,7 +34,8 @@
     public async Task Generate()
     {
 
-        var result = mandelbrot.Generate(0, 0, 0);
+        // var result = mandelbrot.Generate(0, 0, 0);
+        var result = mandelbrot.DoCalculation(100, 100, SuperSampleType.SUPER_SAMPLE_NONE);
         var text =
                 await JSRuntime.InvokeAsync<string>("drawPixels", _canvasReference.Id, 0, 0, 100, 100, result);
     }

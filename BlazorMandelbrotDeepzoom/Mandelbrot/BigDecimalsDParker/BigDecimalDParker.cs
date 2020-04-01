@@ -6,10 +6,14 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Numerics;
 
-namespace BigDecimals
+namespace BigDecimalsDParker
 {
-    public class BigDecimal : IComparable<BigDecimal>, ICloneable
+    public partial class BigDecimal : IComparable<BigDecimal>, ICloneable
     {
+        // java BigDecimal uses other definitions:
+        // scale is the number of digits behind the dot
+        // precision is the number of digits
+
         private static readonly BigInteger TEN = new BigInteger(10);
         private static readonly BigInteger ONE = new BigInteger(1);
         private static readonly BigInteger ZERO = new BigInteger(0);
@@ -22,6 +26,19 @@ namespace BigDecimals
             Value = v.Value;
             Precision = precision;
             MaxPrecision = maxPrecision;
+        }
+
+        public int JavaScale()
+        {
+            
+            // the java definition of Scale is equal to c#'s Precision
+            // the java definition of Precision is equal the length of the BigInteger (almost)
+            return Precision;
+        }
+        public int JavaPrecision()
+        {
+
+            return Value >= 0 ? Value.ToString().Length : Value.ToString().Length - 1;
         }
 
         public BigDecimal(BigDecimal v, int precision) : this(v, precision, 100) { }
@@ -49,6 +66,12 @@ namespace BigDecimals
 
         public BigDecimal(string s, int maxPrecision)
         {
+            this.MaxPrecision = 100;
+            if (s.ToLower().Contains('e'))
+            {
+                HandleE(s.ToLower());
+                return;
+            }
             int dec;
             if ((dec = s.IndexOf('.')) >= 0)
             {
@@ -60,7 +83,34 @@ namespace BigDecimals
             }
             this.Value = BigInteger.Parse(s);
             this.Precision = s.Length - dec;
-            this.MaxPrecision = 100;
+            
+        }
+
+        public void HandleE(string s)
+        {
+            var idx = s.IndexOf('e');
+            var potentialdot = s.Substring(idx - 1);
+            var dotidx = s.IndexOf('.');
+            var number = dotidx != -1 ? potentialdot.Remove(dotidx, 1) : potentialdot;            
+            
+            var bi = BigInteger.Parse(s.Substring(0, idx));
+            var precision = dotidx != -1 ? idx - dotidx : 0;
+            if (s[idx+1] == '-')
+            {
+                // 1E1 -> 10 -> 10 precision 0
+                // 1E-1 -> 0.1 -> 1 precision 1
+                // 3.24E-4 -> 0.000324 -> 324 precision 6
+                precision += int.Parse(s.Substring(idx + 2));
+                this.Value = bi;
+            }
+            else
+            {
+                var e = int.Parse(s.Substring(idx + 1));
+                precision -= e;
+                this.Value = bi * BigInteger.Pow(10, e);
+            }
+
+            this.Precision = precision;
         }
 
         public static implicit operator BigDecimal(BigInteger v)
@@ -344,12 +394,17 @@ namespace BigDecimals
 
         public override string ToString()
         {
-            string s = Value.ToString();
-            while (Precision > s.Length)
+            if (Precision == 0)
+            {
+                return Value.ToString();
+            }
+            string s = Value.Sign == -1 ? (-Value).ToString() : Value.ToString();
+            while (Precision > s.Length - 1)
             {
                 s = "0" + s;
             }
-            return s.Insert(s.Length - Precision, ".");
+
+            return (Value.Sign == -1 ? "-" : String.Empty) + s.Insert(s.Length - Precision, ".");
         }
 
         public override int GetHashCode()
@@ -403,6 +458,10 @@ namespace BigDecimals
 
         public static bool operator ==(BigDecimal left, BigDecimal right)
         {
+            if ((object)left == null && (object)right == null)
+            {
+                return true;
+            }
             return left.CompareTo(right) == 0;
         }
 
@@ -426,116 +485,6 @@ namespace BigDecimals
             return new BigDecimal(this);
         }
 
-        private int scale;
-        /**
- * Translates a {@code double} into a {@code BigDecimal} which
- * is the exact decimal representation of the {@code double}'s
- * binary floating-point value.  The scale of the returned
- * {@code BigDecimal} is the smallest value such that
- * <tt>(10<sup>scale</sup> &times; val)</tt> is an integer.
- * <p>
- * <b>Notes:</b>
- * <ol>
- * <li>
- * The results of this constructor can be somewhat unpredictable.
- * One might assume that writing {@code new BigDecimal(0.1)} in
- * Java creates a {@code BigDecimal} which is exactly equal to
- * 0.1 (an unscaled value of 1, with a scale of 1), but it is
- * actually equal to
- * 0.1000000000000000055511151231257827021181583404541015625.
- * This is because 0.1 cannot be represented exactly as a
- * {@code double} (or, for that matter, as a binary fraction of
- * any finite length).  Thus, the value that is being passed
- * <i>in</i> to the constructor is not exactly equal to 0.1,
- * appearances notwithstanding.
- *
- * <li>
- * The {@code String} constructor, on the other hand, is
- * perfectly predictable: writing {@code new BigDecimal("0.1")}
- * creates a {@code BigDecimal} which is <i>exactly</i> equal to
- * 0.1, as one would expect.  Therefore, it is generally
- * recommended that the {@linkplain #BigDecimal(String)
- * <tt>String</tt> constructor} be used in preference to this one.
- *
- * <li>
- * When a {@code double} must be used as a source for a
- * {@code BigDecimal}, note that this constructor provides an
- * exact conversion; it does not give the same result as
- * converting the {@code double} to a {@code String} using the
- * {@link Double#toString(double)} method and then using the
- * {@link #BigDecimal(String)} constructor.  To get that result,
- * use the {@code static} {@link #valueOf(double)} method.
- * </ol>
- *
- * @param val {@code double} value to be converted to
- *        {@code BigDecimal}.
- * @throws NumberFormatException if {@code val} is infinite or NaN.
- */
-        public BigDecimal(double val)
-        {
-            if (Double.IsInfinity(val) || Double.IsNaN(val))
-                throw new FormatException("Infinite or NaN");
-
-            // Translate the double into sign, exponent and significand, according
-            // to the formulae in JLS, Section 20.10.22.
-            long valBits = BitConverter.DoubleToInt64Bits(val);
-            int sign = ((valBits >> 63) == 0 ? 1 : -1);
-            int exponent = (int)((valBits >> 52) & 0x7ffL);
-            long significand = (exponent == 0 ? (valBits & ((1L << 52) - 1)) << 1
-                                : (valBits & ((1L << 52) - 1)) | (1L << 52));
-            exponent -= 1075;
-            // At this point, val == sign * significand * 2**exponent.
-
-            /*
-             * Special case zero to supress nonterminating normalization
-             * and bogus scale calculation.
-             */
-            if (significand == 0)
-            {
-                Value = BigInteger.Zero;
-                // intCompact = 0;
-                Precision = 1;
-                return;
-            }
-
-            // Normalize
-            while ((significand & 1) == 0)
-            {    //  i.e., significand is even
-                significand >>= 1;
-                exponent++;
-            }
-
-            // Calculate intVal and scale
-            long s = sign * significand;
-            BigInteger b;
-            if (exponent < 0)
-            {
-                b = BigInteger.Pow(new BigInteger(5), -exponent) * s;
-                scale = -exponent;
-            }
-            else if (exponent > 0)
-            {
-                b = BigInteger.Pow(new BigInteger(2), exponent) * s;
-            }
-            else
-            {
-                b = new BigInteger(s);
-            }
-            // intCompact = compactValFor(b);
-            Value = b; // (intCompact != INFLATED) ? null : b;
-        } // method
-        public double doubleValue()
-        {
-            //if (scale == 0 && intCompact != INFLATED)
-            //    return (double)intCompact;
-            // Somewhat inefficient, but guaranteed to work.
-            return Double.Parse(this.ToString());
-        }
-
-        public BigDecimal MovePointLeft(int n)
-        {
-            double factor = Math.Pow(10.0, (double)-n);
-            return this * new BigDecimal(factor);
-        }
+        
     } // class
 } // namespace

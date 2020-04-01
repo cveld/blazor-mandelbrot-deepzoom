@@ -21,7 +21,7 @@
 //    along with SuperFractalThing.  If not, see <http://www.gnu.org/licenses/>.
 //   	
 
-using BigDecimals;
+using BigDecimalsDParker;
 using Mandelbrot;
 using System;
 
@@ -155,7 +155,7 @@ public class CalculationManager // implements Runnable
 		return mStats.GetProgress();
 	}
 	
-	void SetAccuracy(int pIndex)
+	public void SetAccuracy(int pIndex)
 	{
 		switch (pIndex)
 		{
@@ -178,7 +178,7 @@ public class CalculationManager // implements Runnable
 		}
 	}
 
-	void SetCoordinates( BigDecimal aX, BigDecimal aY, double aSize, int aSize_extra_exponent, MathContext aContext )
+	public void SetCoordinates( BigDecimal aX, BigDecimal aY, double aSize, int aSize_extra_exponent, MathContext aContext )
 	{
 		mCentre_x = aX;
 		mCentre_y = aY;
@@ -186,12 +186,12 @@ public class CalculationManager // implements Runnable
 		mSize_extra_exponent=aSize_extra_exponent;
 		mContext = aContext;
 	}
-	void SetBuffer( IndexBuffer2D aBuffer, SuperSampleType aSuper_sample )
+	public void SetBuffer( IndexBuffer2D aBuffer, SuperSampleType aSuper_sample )
 	{
 		mBuffer = aBuffer;
 		mSuper_sample = aSuper_sample;
 	}
-	void SetIterationLimit(int aIteration_limit)
+	public void SetIterationLimit(int aIteration_limit)
 	{
 		mIteration_limit=aIteration_limit;
 	}
@@ -631,6 +631,7 @@ public class CalculationManager // implements Runnable
 				}
 				// Returning is only applicable with multiple threads
 				//return;//exit
+				continue;
 			}
 
 			if (s >= mSector_count)

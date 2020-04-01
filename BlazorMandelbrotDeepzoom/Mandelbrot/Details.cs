@@ -23,7 +23,7 @@
 
 
 
-using BigDecimals;
+using BigDecimalsDParker;
 using Mandelbrot;
 using System;
 
@@ -402,16 +402,16 @@ public class Details : Approximation {
 		BigDecimal x,y,p,q,c,ci;
 		int count = 1;
 		
-		c = new BigDecimal( aScreen_offset_x * mActual_width );
-		ci = new BigDecimal( aScreen_offset_y * mActual_width );
+		c = new BigDecimal( (aScreen_offset_x * mActual_width).ToString() );
+		ci = new BigDecimal( (aScreen_offset_y * mActual_width).ToString() );
 		
 		if (aSize_extra_exponent!=0)
 		{
-			//double factor = Math.Pow(10.0, (double)-aSize_extra_exponent);
-			//c = c * new BigDecimal(factor);
-			//ci = ci * new BigDecimal(factor);
-			c = c.MovePointLeft((int)aSize_extra_exponent);
-			ci = ci.MovePointLeft((int)aSize_extra_exponent);
+			double factor = Math.Pow(10.0, (double)-aSize_extra_exponent);
+			c = c * new BigDecimal(factor.ToString());
+			ci = ci * new BigDecimal(factor.ToString());
+			//c = c.MovePointLeft((int)aSize_extra_exponent);
+			//ci = ci.MovePointLeft((int)aSize_extra_exponent);
 		}
 		c = c + pX;
 		ci = ci + pY;
@@ -730,8 +730,8 @@ public class Details : Approximation {
 		else
 			CalculateApproximation( aScreen_offset_x, aScreen_offset_y, delta );
 
-		x = mFull_x_after_approx + new BigDecimal(delta[0]);
-		y = mFull_y_after_approx + new BigDecimal(delta[1]);
+		x = mFull_x_after_approx + new BigDecimal(delta[0].ToString());
+		y = mFull_y_after_approx + new BigDecimal(delta[1].ToString());
 
 		
 		if (mOriginal_approx==null)
@@ -757,11 +757,11 @@ public class Details : Approximation {
 
 		if (aSize_extra_exponent!=0)
 		{
-			p= new BigDecimal(aScreen_offset_x*mActual_width);   //aScreen_offset_x * mActual_width;
+			p= new BigDecimal((aScreen_offset_x*mActual_width).ToString());   //aScreen_offset_x * mActual_width;
 			c=p.MovePointLeft((int)aSize_extra_exponent);
 			c = c + pX;
 			
-			p=new BigDecimal(aScreen_offset_y * mActual_width);
+			p=new BigDecimal((aScreen_offset_y * mActual_width).ToString());
 			ci=p.MovePointLeft((int)aSize_extra_exponent);
 			ci = ci + pY;
 			
