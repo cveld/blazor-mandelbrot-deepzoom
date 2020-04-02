@@ -14,7 +14,7 @@
     private WebGLContext _webGLContext;
 
     protected BECanvasComponent _canvasReference;
-    
+
     private Mandelbrot mandelbrot;
     public Canvas()
     {
@@ -36,7 +36,9 @@
 
         // var result = mandelbrot.Generate(0, 0, 0);
         var result = mandelbrot.DoCalculation(100, 100, SuperSampleType.SUPER_SAMPLE_NONE);
+        var palette = new SFTPaletteOld();
+        var image = result.MakeTexture(palette, SuperSampleType.SUPER_SAMPLE_NONE);
         var text =
-                await JSRuntime.InvokeAsync<string>("drawPixels", _canvasReference.Id, 0, 0, 100, 100, result);
+            await JSRuntime.InvokeAsync<string>("drawPixels", _canvasReference.Id, 0, 0, 100, 100, image.pixels);
     }
 }

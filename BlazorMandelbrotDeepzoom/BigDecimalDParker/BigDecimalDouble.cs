@@ -1,11 +1,12 @@
-﻿using System;
+﻿using Mandelbrot;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Text;
 
 namespace BigDecimalsDParker
 {
-    public partial class BigDecimal
+    public partial class BigDecimal : IBigDecimal
     {
         private int scale;
         /**
@@ -53,7 +54,7 @@ namespace BigDecimalsDParker
  * @throws NumberFormatException if {@code val} is infinite or NaN.
  */
         
-        public double doubleValue()
+        public double DoubleValue()
         {
             //if (scale == 0 && intCompact != INFLATED)
             //    return (double)intCompact;
@@ -61,15 +62,24 @@ namespace BigDecimalsDParker
             return Double.Parse(this.ToString(), CultureInfo.InvariantCulture);
         }
 
-        public BigDecimal MovePointLeft(int n)
+        public IBigDecimal MovePointLeft(int n)
         {
-            double factor = Math.Pow(10.0, (double)-n);
-            return this * new BigDecimal(factor);
+            return new BigDecimal(Value, Precision + 1, MaxPrecision);
+            // double factor = Math.Pow(10.0, (double)-n);
+            // return this * new BigDecimal(factor);
         }
-        public BigDecimal MovePointRight(int n)
+        public IBigDecimal MovePointRight(int n)
         {
-            double factor = Math.Pow(10.0, (double)n);
-            return this * new BigDecimal(factor);
+            return new BigDecimal(Value, Precision - 1, MaxPrecision);
+
+            // double factor = Math.Pow(10.0, (double)n);
+            // return this * new BigDecimal(factor);
+        }
+       
+
+        public IBigDecimal Mul(IBigDecimal bd)
+        {
+            return Mul(this, bd as BigDecimal, Math.Min(this.MaxPrecision, (bd as BigDecimal).MaxPrecision));
         }
 
         public BigDecimal(double d) : this(d.ToString(System.Globalization.CultureInfo.InvariantCulture))

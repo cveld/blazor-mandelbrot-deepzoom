@@ -23,7 +23,7 @@
 
 
 
-using BigDecimalsDParker;
+using BigDecimalContracts;
 using Mandelbrot;
 using System;
 
@@ -46,12 +46,12 @@ public class Details : Approximation {
 	float mScreen_offset_x;
 	float mScreen_offset_y;
 	
-	MathContext mMath_context;
-	BigDecimal mFull_x_after_approx;
-	BigDecimal mFull_y_after_approx;
+	IMathContext mMath_context;
+	IBigDecimal mFull_x_after_approx;
+	IBigDecimal mFull_y_after_approx;
 	
-	BigDecimal mFull_x_screen_centre;
-	BigDecimal mFull_y_screen_centre;
+	IBigDecimal mFull_x_screen_centre;
+	IBigDecimal mFull_y_screen_centre;
 	
 	Approximation mOriginal_approx;
 	
@@ -70,7 +70,8 @@ public class Details : Approximation {
 	float mSecondary_radius;
 	
 	static int sDetails_counter;
-	
+	private readonly IBigDecimalFactory bigDecimalFactory;
+
 	public float GetScreenOffsetX()
 	{
 		return mScreen_offset_x;
@@ -178,21 +179,23 @@ public class Details : Approximation {
 	{
 		mSecondary_radius = r;
 	}	
-	public void SetMathContext(MathContext mc)
+	public void SetMathContext(IMathContext mc)
 	{
 		mMath_context = mc;
 	}
 	
-	public Details()
+	public Details(IBigDecimalFactory bigDecimalFactory) : base(bigDecimalFactory)
 	{
+		this.bigDecimalFactory = bigDecimalFactory;
 	}
 	
 	//
 	// Clone a Details class
 	//
 	public Details(Details aDetails) : base(aDetails)
-	{		
-		mX0=aDetails.mX0;
+	{
+		this.bigDecimalFactory = aDetails.bigDecimalFactory;
+		mX0 =aDetails.mX0;
 		mX0i=aDetails.mX0i;
 		
 		mFull_x_after_approx=aDetails.mFull_x_after_approx;
@@ -235,7 +238,7 @@ public class Details : Approximation {
 		mRepeater_fail_point = false;
 		
 		mMath_context = aDetails.mMath_context;
-		mSecondary_radius = aDetails.mSecondary_radius;
+		mSecondary_radius = aDetails.mSecondary_radius;		
 	}
 	
 	//
@@ -329,18 +332,18 @@ public class Details : Approximation {
 	//  = 2-2*sqrt( 1-dte/4)
 	//	~ 2-2*(1-dte/8-dte^2/64)
 	// = dte/4 + dte^2/32
-	double CalculateSmallEdgeDistance(BigDecimal x, BigDecimal y, BigDecimal four )
+	double CalculateSmallEdgeDistance(IBigDecimal x, IBigDecimal y, IBigDecimal four )
 	{
-		BigDecimal p,q,dte;
+		IBigDecimal p,q,dte;
 		
 		// p = x.Multiply(x, mMath_context);
-		p = x * x;
+		p = x.Mul(x);
 		// q = y.multiply(y, mMath_context);
-		q = y * y;
+		q = y.Mul(y);
 		// dte = four.subtract(p, mMath_context);
-		dte = four - p;
-		dte = dte - q;
-		double delta = dte.doubleValue();
+		dte = four.Sub(p);
+		dte = dte.Sub(q);
+		double delta = dte.DoubleValue();
 		double dist = delta/4 + delta*delta/32;
 		
 /*		BigDecimal test,test2;
@@ -354,7 +357,7 @@ public class Details : Approximation {
 	// Create the data for a reference point.
 	// Cubic refers to the use of cubic version of the approximation equation
 	//
-	public void FillInCubic( BigDecimal pX, BigDecimal pY, int aIteration_limit, double aActual_width, float aSize_extra_exponent, float aScreen_offset_x, float aScreen_offset_y )
+	public void FillInCubic( IBigDecimal pX, IBigDecimal pY, int aIteration_limit, double aActual_width, float aSize_extra_exponent, float aScreen_offset_x, float aScreen_offset_y )
 	{
 		mActual_width = aActual_width;
 		mIteration_limit = aIteration_limit;
@@ -399,29 +402,29 @@ public class Details : Approximation {
 		}
 		
 //		FixedInf<4> x(pX->NumWords()),y(pX->NumWords()),p(pX->NumWords()),q(pX->NumWords()),c(pX->NumWords()),ci(pX->NumWords());
-		BigDecimal x,y,p,q,c,ci;
+		IBigDecimal x,y,p,q,c,ci;
 		int count = 1;
 		
-		c = new BigDecimal( (aScreen_offset_x * mActual_width).ToString() );
-		ci = new BigDecimal( (aScreen_offset_y * mActual_width).ToString() );
+		c = bigDecimalFactory.FromDouble( aScreen_offset_x * mActual_width );
+		ci = bigDecimalFactory.FromDouble( aScreen_offset_y * mActual_width );
 		
 		if (aSize_extra_exponent!=0)
 		{
-			double factor = Math.Pow(10.0, (double)-aSize_extra_exponent);
-			c = c * new BigDecimal(factor.ToString());
-			ci = ci * new BigDecimal(factor.ToString());
-			//c = c.MovePointLeft((int)aSize_extra_exponent);
-			//ci = ci.MovePointLeft((int)aSize_extra_exponent);
+			//double factor = Math.Pow(10.0, (double)-aSize_extra_exponent);
+			//c = c * new BigDecimal(factor.ToString());
+			//ci = ci * new BigDecimal(factor.ToString());
+			c = c.MovePointLeft((int)aSize_extra_exponent);
+			ci = ci.MovePointLeft((int)aSize_extra_exponent);
 		}
-		c = c + pX;
-		ci = ci + pY;
+		c = c.Add(pX);
+		ci = ci.Add(pY);
 
 		
 		x=c;
 		y=ci;
 		
-		xd=x.doubleValue();
-		yd=y.doubleValue();
+		xd=x.DoubleValue();
+		yd=y.DoubleValue();
 
 		mX0 = xd;
 		mX0i = yd;
@@ -540,23 +543,23 @@ public class Details : Approximation {
 				Ci=Ci2;
 
 
-				//Now do next mand calculation
+				//Now do next Mandelbrot calculation
 				//This does an unnecessary multiply
-				p = x * x;
-				q = y * y;
+				p = x.Mul(x);
+				q = y.Mul(y);
 
-				p = p - q;
-				p = p + c;
+				p = p.Sub(q);
+				p = p.Add(c);
 
-				q = x * y;
-				q = q + q;
-				q = q + ci;
+				q = x.Mul(y);
+				q = q.Add(q);
+				q = q.Add(ci);
 				
 				x=p;
 				y=q;
 				
-				xd=x.doubleValue();
-				yd=y.doubleValue();
+				xd=x.DoubleValue();
+				yd=y.DoubleValue();
 
 				count++;
 				if (count>=mIteration_limit-1)
@@ -658,7 +661,7 @@ public class Details : Approximation {
 		mX[i] = xd;
 		mXi[i] = yd;
 		
-		BigDecimal four = new BigDecimal(4);
+		IBigDecimal four = bigDecimalFactory.FromInt(4);
 		mDistance_to_edge_sqr[i] = 2.0 - Math.Sqrt( mX[i]*mX[i] + mXi[i]*mXi[i] );
 		mDistance_to_edge_sqr[i] = mDistance_to_edge_sqr[i]*Math.Abs(mDistance_to_edge_sqr[i]);
 		if (mDistance_to_edge_sqr[i]<1e-7)
@@ -669,15 +672,15 @@ public class Details : Approximation {
 		{
 			i++;
 			//Now do next mand calculation
-			p = x * x;
-			q = y * y;
+			p = x.Mul(x);
+			q = y.Mul(y);
 
-			p = p - q;
-			p = p + c;
+			p = p.Sub(q);
+			p = p.Add(c);
 
-			q = x * y;
-			q = q + q;
-			q = q + ci;
+			q = x.Mul(y);
+			q = q.Add(q);
+			q = q.Add(ci);
 			
 			x=p;
 			y=q;
@@ -687,8 +690,8 @@ public class Details : Approximation {
 			{
 				break;
 			}
-			mX[i]=x.doubleValue();
-			mXi[i]=y.doubleValue();
+			mX[i]=x.DoubleValue();
+			mXi[i]=y.DoubleValue();
 			
 			mDistance_to_edge_sqr[i] = 2.00 - Math.Sqrt( mX[i]*mX[i] + mXi[i]*mXi[i] );
 			mDistance_to_edge_sqr[i] = mDistance_to_edge_sqr[i]*Math.Abs(mDistance_to_edge_sqr[i]);
@@ -716,13 +719,13 @@ public class Details : Approximation {
 			mFailed_repeater_details = new Details(this);
 		}
 			
-		BigDecimal pX = mFull_x_screen_centre;
-		BigDecimal pY = mFull_y_screen_centre;
+		IBigDecimal pX = mFull_x_screen_centre;
+		IBigDecimal pY = mFull_y_screen_centre;
 
 		mScreen_offset_x = aScreen_offset_x;
 		mScreen_offset_y = aScreen_offset_y;
 
-		BigDecimal x,y,p,q,c,ci;
+		IBigDecimal x,y,p,q,c,ci;
 		double[] delta = new double[2];
 		
 		if (mOriginal_approx!=null)	
@@ -730,8 +733,8 @@ public class Details : Approximation {
 		else
 			CalculateApproximation( aScreen_offset_x, aScreen_offset_y, delta );
 
-		x = mFull_x_after_approx + new BigDecimal(delta[0].ToString());
-		y = mFull_y_after_approx + new BigDecimal(delta[1].ToString());
+		x = mFull_x_after_approx.Add(bigDecimalFactory.FromDouble(delta[0]));
+		y = mFull_y_after_approx.Add(bigDecimalFactory.FromDouble(delta[1]));
 
 		
 		if (mOriginal_approx==null)
@@ -745,10 +748,10 @@ public class Details : Approximation {
 		count = GetApproxIterations();
 		
 		
-		mX[i] = x.doubleValue();
-		mXi[i] = y.doubleValue();
+		mX[i] = x.DoubleValue();
+		mXi[i] = y.DoubleValue();
 
-		BigDecimal four = new BigDecimal(4);
+		IBigDecimal four = bigDecimalFactory.FromInt(4);
 			
 		mDistance_to_edge_sqr[i] = 2.0 - Math.Sqrt( mX[i]*mX[i] + mXi[i]*mXi[i] );
 		mDistance_to_edge_sqr[i] = mDistance_to_edge_sqr[i]*Math.Abs(mDistance_to_edge_sqr[i]);
@@ -757,38 +760,38 @@ public class Details : Approximation {
 
 		if (aSize_extra_exponent!=0)
 		{
-			p= new BigDecimal((aScreen_offset_x*mActual_width).ToString());   //aScreen_offset_x * mActual_width;
+			p = bigDecimalFactory.FromDouble(aScreen_offset_x*mActual_width);   //aScreen_offset_x * mActual_width;
 			c=p.MovePointLeft((int)aSize_extra_exponent);
-			c = c + pX;
+			c = c.Add(pX);
 			
-			p=new BigDecimal((aScreen_offset_y * mActual_width).ToString());
+			p= bigDecimalFactory.FromDouble(aScreen_offset_y * mActual_width);
 			ci=p.MovePointLeft((int)aSize_extra_exponent);
-			ci = ci + pY;
+			ci = ci.Add(pY);
 			
 		}
 		else
 		{
 			c = pX;
 			ci = pY;
-			c = c + new BigDecimal(aScreen_offset_x * mActual_width);
-			ci = ci + new BigDecimal(aScreen_offset_y * mActual_width);
+			c = c.Add(bigDecimalFactory.FromDouble(aScreen_offset_x * mActual_width));
+			ci = ci.Add(bigDecimalFactory.FromDouble(aScreen_offset_y * mActual_width));
 		}
 
-		mX0 = c.doubleValue();
-		mX0i = ci.doubleValue();
+		mX0 = c.DoubleValue();
+		mX0i = ci.DoubleValue();
 
 		do
 		{
 			i++;
-			//Now do next mand calculation
-			p = x * x;
-			q = y * y;
-			p = p - q;
-			p = p + c;
+			//Now do next Mandelbrot calculation
+			p = x.Mul(x);
+			q = y.Mul(y);
+			p = p.Sub(q);
+			p = p.Add(c);
 
-			q = x * y;
-			q = q + q;
-			q = q + ci;
+			q = x.Mul(y);
+			q = q.Add(q);
+			q = q.Add(ci);
 			
 			x=p;
 			y=q;
@@ -798,8 +801,8 @@ public class Details : Approximation {
 			{
 				break;
 			}
-			mX[i]=x.doubleValue();
-			mXi[i]=y.doubleValue();
+			mX[i]=x.DoubleValue();
+			mXi[i]=y.DoubleValue();
 			
 			mDistance_to_edge_sqr[i] = 2.0 - Math.Sqrt( mX[i]*mX[i] + mXi[i]*mXi[i] );
 			mDistance_to_edge_sqr[i] = mDistance_to_edge_sqr[i]*Math.Abs(mDistance_to_edge_sqr[i]);
@@ -811,7 +814,7 @@ public class Details : Approximation {
 		mNum_iterations = count;
 	}
 	
-	void FillInCubicForRepeater( BigDecimal pX, BigDecimal pY, int aIteration_limit, double aActual_width, float aSize_extra_exponent, float aScreen_offset_x, float aScreen_offset_y, int pCount )
+	void FillInCubicForRepeater( IBigDecimal pX, IBigDecimal pY, int aIteration_limit, double aActual_width, float aSize_extra_exponent, float aScreen_offset_x, float aScreen_offset_y, int pCount )
 	{
 		//Not used in java version
 	}

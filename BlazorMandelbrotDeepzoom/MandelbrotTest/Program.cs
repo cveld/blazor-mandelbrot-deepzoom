@@ -1,15 +1,26 @@
-﻿using BigDecimalsDParker;
+﻿using BigDecimalDParker;
+using BigDecimalsDParker;
 using System;
 
 namespace MandelbrotTest
 {
     class Program
     {
+        public static T[] SubArray<T>(T[] data, int index, int length)
+        {
+            T[] result = new T[length];
+            Array.Copy(data, index, result, 0, length);
+            return result;
+        }
+
         static void Main(string[] args)
-        {            
-            var mandelbrot = new Mandelbrot.Mandelbrot(400, 400);
+        {
+            var bigDecimalFactory = new Mandelbrot.BigDecimalsDParker.BigDecimalFactory();
+            var mathContextFactory = new MathContextFactory();
+            var mandelbrot = new Mandelbrot.Mandelbrot(400, 400, bigDecimalFactory, mathContextFactory);
             var result = mandelbrot.DoCalculation(400, 400, SuperSampleType.SUPER_SAMPLE_NONE);
             var palette = new SFTPaletteOld();
+            var subarray = SubArray(result.mBuffer, 20000, 100);
             var image = result.MakeTexture(palette, SuperSampleType.SUPER_SAMPLE_NONE);
             Console.WriteLine("Hello World!");
         }

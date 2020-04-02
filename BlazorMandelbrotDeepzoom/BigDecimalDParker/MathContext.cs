@@ -1,10 +1,11 @@
-﻿using System;
+﻿using BigDecimalContracts;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
 namespace BigDecimalsDParker
 {
-    public class MathContext
+    public class MathContext : IMathContext
     {
         int precision;
         public MathContext(int precision)

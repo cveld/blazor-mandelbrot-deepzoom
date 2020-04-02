@@ -4,6 +4,7 @@ using System.Text;
 
 namespace Mandelbrot
 {
+    // noob version of the java AtomicInteger class
     public class AtomicInteger
     {
         public AtomicInteger()

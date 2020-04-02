@@ -21,6 +21,7 @@
 //    along with SuperFractalThing.  If not, see <http://www.gnu.org/licenses/>.
 // 
 
+using Mandelbrot;
 using System;
 
 public class Approximation {
@@ -48,10 +49,12 @@ public class Approximation {
 	protected double Bi;
 	protected double C;
 	protected double Ci;
-		
-	public Approximation()
-	{
 
+	public IBigDecimalFactory bigDecimalFactory;
+
+	public Approximation(IBigDecimalFactory bigDecimalFactory)
+	{
+		this.bigDecimalFactory = bigDecimalFactory;
 	}
 	
 	protected int GetApproxIterations()
@@ -78,6 +81,8 @@ public class Approximation {
 	//
 	public Approximation(Approximation aApprox)
 	{
+		bigDecimalFactory = aApprox.bigDecimalFactory;
+
 		mIterations_n=aApprox.mIterations_n;
 		
 		A=aApprox.A;

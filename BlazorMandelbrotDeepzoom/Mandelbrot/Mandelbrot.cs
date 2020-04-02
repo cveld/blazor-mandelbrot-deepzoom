@@ -1,6 +1,5 @@
-﻿using BigDecimalsDParker;
+﻿using BigDecimalContracts;
 using System;
-using System.Security.Cryptography.X509Certificates;
 
 namespace Mandelbrot
 {
@@ -9,13 +8,15 @@ namespace Mandelbrot
         uint[] generated;
         public int Width { get; }
         public int Height { get; }
-        public Mandelbrot(int xw, int yw)
+        public Mandelbrot(int xw, int yw, IBigDecimalFactory bigDecimalFactory, IMathContextFactory mathContextFactory)
         {
             Width = xw;
             Height = yw;
-            generated = new uint[xw * yw * 4];
+			this.bigDecimalFactory = bigDecimalFactory;
+			this.mathContextFactory = mathContextFactory;
+			generated = new uint[xw * yw * 4];
         }
-        public uint[] Generate(BigDecimal xp, BigDecimal yp, BigDecimal scale)
+        public uint[] Generate(IBigDecimal xp, IBigDecimal yp, IBigDecimal scale)
         {
             var idx = 0;
             var random = new Random();
@@ -31,28 +32,30 @@ namespace Mandelbrot
             return generated;
         }
 
-		BigDecimal mSize;
-		BigDecimal mPos, mPosi;
+		IBigDecimal mSize;
+		IBigDecimal mPos, mPosi;
 		int mMax_iterations;
 		CalculationManager mCalculation;
 		int mResolution_x;
 		int mResolution_y;
 		IndexBuffer2D buffer;
+		private readonly IBigDecimalFactory bigDecimalFactory;
+		private readonly IMathContextFactory mathContextFactory;
 
 		public IndexBuffer2D DoCalculation(int aResolution_x, int aResolution_y, SuperSampleType aSuper_sample)
 		{
 			mResolution_x = aResolution_x;
 			mResolution_y = aResolution_y;
-			BigDecimal[] coords = new BigDecimal[2];
+			IBigDecimal[] coords = new IBigDecimal[2];
 
 			//mGui.StartProcessing();
 			//mStart_time = System.currentTimeMillis();
 			//mGui.SetCalculationTime(-1);
 			//coords = mGui.GetCoords();
 			mMax_iterations = 1024;
-			mSize = new BigDecimal(3.0);
-			mPos = new BigDecimal(-0.75); //, MathContext.DECIMAL128);
-			mPosi = new BigDecimal(0); //, MathContext.DECIMAL128);
+			mSize = bigDecimalFactory.FromDouble(3.0);
+			mPos = bigDecimalFactory.FromDouble(-0.75); //, MathContext.DECIMAL128);
+			mPosi = bigDecimalFactory.FromDouble(0); //, MathContext.DECIMAL128);
 			int scale = mSize.JavaScale();
 			int precision = mSize.JavaPrecision();
 			int expo = 0;
@@ -85,28 +88,28 @@ namespace Mandelbrot
 			//		break;
 			// }
 
-			CalculationManager calc = new CalculationManager();
+			CalculationManager calc = new CalculationManager(bigDecimalFactory);
 			mCalculation = calc;
 
 			double size;
-			BigDecimal bd280 = new BigDecimal(1e-280);
+			IBigDecimal bd280 = bigDecimalFactory.FromDouble(1e-280);
 			if (mSize.CompareTo(bd280) < 0)
 			{
-				BigDecimal mod_size = mSize;
+				IBigDecimal mod_size = mSize;
 				while (mod_size.CompareTo(bd280) < 0)
 				{
 					mod_size = mod_size.MovePointRight(1);
 					expo += 1;
 				}
-				size = mod_size.doubleValue();
+				size = mod_size.DoubleValue();
 
 			}
 			else
 			{
-				size = mSize.doubleValue();
+				size = mSize.DoubleValue();
 			}
 
-			calc.SetCoordinates(mPos, mPosi, (size / 2 * mResolution_x) / mResolution_y, expo, new MathContext(precision));
+			calc.SetCoordinates(mPos, mPosi, (size / 2 * mResolution_x) / mResolution_y, expo, mathContextFactory.Build(precision));
 			calc.SetBuffer(buffer, aSuper_sample);
 			calc.SetIterationLimit(mMax_iterations);
 			calc.SetAccuracy(1);

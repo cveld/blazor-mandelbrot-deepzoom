@@ -213,5 +213,5 @@ public class IndexBuffer2D
 	int mHeight;
 	int mStride;
 	int mOffset;
-	int[] mBuffer;
+	public int[] mBuffer;
 }

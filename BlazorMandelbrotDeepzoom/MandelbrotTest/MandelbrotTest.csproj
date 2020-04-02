@@ -6,6 +6,9 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\BigDecimalContracts\BigDecimalContracts.csproj" />
+    <ProjectReference Include="..\BigDecimalDParker\BigDecimalDParker.csproj" />
+    <ProjectReference Include="..\BigDecimalJavaMath\BigDecimalJavaMath.csproj" />
     <ProjectReference Include="..\Mandelbrot\Mandelbrot.csproj" />
   </ItemGroup>
 

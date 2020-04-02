@@ -4,6 +4,7 @@
 //
 //
 //    Copyright 2013 Kevin Martin
+//		Ported 2020 by Carl in 't Veld to c# .NET
 //
 //    This file is part of SuperFractalThing.
 //
@@ -21,7 +22,7 @@
 //    along with SuperFractalThing.  If not, see <http://www.gnu.org/licenses/>.
 //   	
 
-using BigDecimalsDParker;
+using BigDecimalContracts;
 using Mandelbrot;
 using System;
 
@@ -125,18 +126,23 @@ public class CalculationManager // implements Runnable
 	bool mClone;
 	double mAccuracy;
 	bool mDo_repeaters;
-	BigDecimal mCentre_x;
-	BigDecimal mCentre_y;
+	IBigDecimal mCentre_x;
+	IBigDecimal mCentre_y;
 	int mSize_extra_exponent;
 	double mActual_width;
-	MathContext mContext;
+	IMathContext mContext;
 	AtomicInteger mSector;
 	AtomicInteger mThread_count;
 	int mSector_width;
 	int mSector_height;
 	int mSector_count;
 	bool mCancel;
-	
+	private readonly IBigDecimalFactory bigDecimalFactory;
+
+	public CalculationManager(IBigDecimalFactory bigDecimalFactory)
+	{
+		this.bigDecimalFactory = bigDecimalFactory;
+	}
 	SuperSampleType GetSuperSampleType()
 	{
 		return mSuper_sample;
@@ -178,7 +184,7 @@ public class CalculationManager // implements Runnable
 		}
 	}
 
-	public void SetCoordinates( BigDecimal aX, BigDecimal aY, double aSize, int aSize_extra_exponent, MathContext aContext )
+	public void SetCoordinates( IBigDecimal aX, IBigDecimal aY, double aSize, int aSize_extra_exponent, IMathContext aContext )
 	{
 		mCentre_x = aX;
 		mCentre_y = aY;
@@ -203,7 +209,7 @@ public class CalculationManager // implements Runnable
 		
 		mBuffer.Clear(2969);
 				
-		mCentre_details = new Details();
+		mCentre_details = new Details(bigDecimalFactory);
 		
 			
 		mCentre_details.SetAccuracy( mAccuracy );
@@ -426,7 +432,7 @@ public class CalculationManager // implements Runnable
 			y[1] = pBuffer.GetHeight();
 			
 		}
-		approx = new Approximation();
+		approx = new Approximation(bigDecimalFactory);
 		
 		for (iy=0; iy<ycount; iy++)
 		{
@@ -556,7 +562,7 @@ public class CalculationManager // implements Runnable
 
 			float new_screen_width;
 			new_screen_width = (screen_width*(x1-x0))/mBuffer.GetWidth();
-			approx = new Approximation();
+			approx = new Approximation(bigDecimalFactory);
 			approx.InitialiseCubic( mCentre_details, centrex,centrey,new_screen_width, mCentre_details );
 			
 			//////////////////////

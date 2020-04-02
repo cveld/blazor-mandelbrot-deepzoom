@@ -5,19 +5,15 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="BigDecimalExtern.cs" />
-    <Compile Remove="MutableBigIntegerJava.cs" />
-    <Compile Remove="SFTPalette.cs" />
+    <Compile Remove="BigDecimalFromDouble.cs" />
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="BigDecimalExtern.cs" />
-    <None Include="SFTPalette.cs" />
+    <None Include="BigDecimalFromDouble.cs" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\BigDecimalContracts\BigDecimalContracts.csproj" />
-    <ProjectReference Include="..\BigDecimalJavaMath\BigDecimalJavaMath.csproj" />
   </ItemGroup>
 
 </Project>

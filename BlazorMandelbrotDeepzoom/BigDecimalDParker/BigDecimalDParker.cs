@@ -5,10 +5,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Numerics;
+using Mandelbrot;
 
 namespace BigDecimalsDParker
 {
-    public partial class BigDecimal : IComparable<BigDecimal>, ICloneable
+    public partial class BigDecimal : IBigDecimal, IComparable<IBigDecimal>, ICloneable
     {
         // java BigDecimal uses other definitions:
         // scale is the number of digits behind the dot
@@ -127,6 +128,10 @@ namespace BigDecimalsDParker
         {
             return Add(left, right, Math.Min(left.MaxPrecision, right.MaxPrecision));
         }
+        public IBigDecimal Add(IBigDecimal bd)
+        {
+            return this + (bd as BigDecimal);
+        }
 
         private static BigDecimal Add(BigDecimal left, BigDecimal right, int maxPrecision)
         {
@@ -136,6 +141,10 @@ namespace BigDecimalsDParker
             return result;
         }
 
+        public IBigDecimal Sub(IBigDecimal bd)
+        {
+            return this - (bd as BigDecimal);
+        }
         public static BigDecimal operator -(BigDecimal left, BigDecimal right)
         {
             return Sub(left, right, Math.Min(left.MaxPrecision, right.MaxPrecision));
@@ -147,15 +156,16 @@ namespace BigDecimalsDParker
             BigDecimal result = new BigDecimal(newVal, left.Precision + right.Precision, maxPrecision);
             result.Clean();
             return result;
-        }
+        }      
 
-        public static BigDecimal operator *(BigDecimal left, BigDecimal right)
-        {
-            return Mul(left, right, Math.Min(left.MaxPrecision, right.MaxPrecision));
+        private IBigDecimal Mul(int i)
+        {            
+            return this.Mul(new BigDecimal(i));
         }
-
-        private static BigDecimal Mul(BigDecimal left, BigDecimal right, int maxPrecision)
+        private static BigDecimal Mul(BigDecimal ileft, BigDecimal iright, int maxPrecision)
         {
+            var left = ileft;
+            var right = iright;
             BigDecimal result = new BigDecimal(left.Value * right.Value, left.Precision + right.Precision, maxPrecision);
             result.Clean();
             return result;
@@ -316,7 +326,7 @@ namespace BigDecimalsDParker
             int nInt = 0, oldWhole = 0;
             do
             {
-                inter = 2 * (1 / (2 * n + 1)) * Pow(power, 2 * nInt + 1);
+                inter = new BigDecimal(2).Mul(BigDecimal.ONE / ((n.Mul(2) as BigDecimal) + new BigDecimal(1))).Mul(Pow(power, 2 * nInt + 1)) as BigDecimal;
                 n += 1;
                 nInt += 1;
                 result += inter;
@@ -340,6 +350,8 @@ namespace BigDecimalsDParker
         {
             return Exp(x, x.MaxPrecision);
         }
+
+       
 
         public static BigDecimal Exp(BigDecimal x, int maxPrecision)
         {
@@ -416,15 +428,15 @@ namespace BigDecimalsDParker
         {
             if (obj is BigDecimal)
             {
-                return this.CompareTo((BigDecimal)obj) == 0;
+                return this.CompareTo(obj as IBigDecimal) == 0;
             }
             throw new ArgumentException("Object is not BigDecimal");
         }
 
-        public int CompareTo(BigDecimal other)
+        public int CompareTo(IBigDecimal other)
         {
-            int precisionDifference = this.Precision - other.Precision;
-            BigInteger thisV = this.Value, otherV = other.Value;
+            int precisionDifference = this.Precision - (other as BigDecimal).Precision;
+            BigInteger thisV = this.Value, otherV = (other as BigDecimal).Value;
             while (precisionDifference > 0)
             {
                 otherV *= TEN;

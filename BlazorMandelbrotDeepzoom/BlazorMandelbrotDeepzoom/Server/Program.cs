@@ -12,9 +12,7 @@ namespace BlazorMandelbrotDeepzoom.Server
     public class Program
     {
         public static void Main(string[] args)
-        {
-            var mandelbrot = new Mandelbrot.Mandelbrot(400, 400);
-            mandelbrot.DoCalculation(400, 400, SuperSampleType.SUPER_SAMPLE_NONE);
+        {            
             CreateHostBuilder(args).Build().Run();
         }
 
