@@ -23,11 +23,11 @@
 using Mandelbrot;
 using System;
 
-interface IPalette
+public interface IPalette
 {
-	int GetColour(int aIndex);
-	int GetAverageColour(int i0, int i1, int i2, int i3);
-	int GetAverageColour(int i0, int i1, int i2, int i3,int i4, int i5, int i6, int i7, int i8);
+	uint GetColour(int aIndex);
+	uint GetAverageColour(int i0, int i1, int i2, int i3);
+	uint GetAverageColour(int i0, int i1, int i2, int i3,int i4, int i5, int i6, int i7, int i8);
 }
 
 public enum SuperSampleType

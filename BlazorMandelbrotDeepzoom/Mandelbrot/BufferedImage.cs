@@ -16,7 +16,7 @@ namespace Mandelbrot
             pixels = new uint[w * h * 4];
         }
 
-        public void setRGB(int x, int y, int color) {
+        public void setRGB(int x, int y, uint color) {
             int index = x * y * 4;
             pixels[index] = (uint)(color & 0xFF); // R
             pixels[index + 1] = (uint)(color << 8 & 0xFF); // G
