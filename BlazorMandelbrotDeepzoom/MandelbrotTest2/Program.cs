@@ -23,7 +23,6 @@ namespace MandelbrotTest2
             var subarray = SubArray(result.mBuffer, 20000, 100);
             var image = result.MakeTexture(palette, SuperSampleType.SUPER_SAMPLE_NONE);
             Console.WriteLine("Hello World!");
-
         }
     }
 }

@@ -14,5 +14,10 @@ namespace BigDecimalIKVM
         {
             this.mathContext = new MathContext(i);
         }
+
+        public MathContextImplementation(MathContext mc)
+        {
+            this.mathContext = mc;
+        }
     }
 }

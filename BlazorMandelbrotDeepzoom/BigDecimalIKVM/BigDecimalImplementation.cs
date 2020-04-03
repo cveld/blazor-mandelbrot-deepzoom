@@ -10,6 +10,7 @@ namespace BigDecimalIKVM
     public struct BigDecimalImplementation : IBigDecimal
     {        
         public readonly BigDecimal bigDecimal;
+        
 
         public BigDecimalImplementation(double d)
         {
@@ -24,6 +25,11 @@ namespace BigDecimalIKVM
         public BigDecimalImplementation(string s)
         {
             bigDecimal = new BigDecimal(s);
+        }
+
+        public BigDecimalImplementation(double d, MathContext mc)
+        {
+            this.bigDecimal = new BigDecimal(d, mc);
         }
 
         public IBigDecimal Add(IBigDecimal bd)

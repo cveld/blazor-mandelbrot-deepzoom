@@ -1,4 +1,5 @@
-﻿using Mandelbrot;
+﻿using BigDecimalContracts;
+using Mandelbrot;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -10,6 +11,11 @@ namespace BigDecimalIKVM
         public IBigDecimal FromDouble(double d)
         {
             return new BigDecimalImplementation(d);
+        }
+
+        public IBigDecimal FromDouble(double d, IMathContext mc)
+        {
+            return new BigDecimalImplementation(d, (mc as MathContextImplementation).mathContext);
         }
 
         public IBigDecimal FromInt(int i)
