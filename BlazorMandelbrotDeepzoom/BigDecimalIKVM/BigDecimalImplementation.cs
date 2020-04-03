@@ -1,4 +1,5 @@
-﻿using java.math;
+﻿using BigDecimalContracts;
+using java.math;
 using Mandelbrot;
 using System;
 using System.Collections.Generic;
@@ -28,6 +29,12 @@ namespace BigDecimalIKVM
         public IBigDecimal Add(IBigDecimal bd)
         {
             return new BigDecimalImplementation(this.bigDecimal.add((bd as BigDecimalImplementation?).Value.bigDecimal));
+        }
+
+        public IBigDecimal Add(IBigDecimal bd, IMathContext mathContext)
+        {
+            return new BigDecimalImplementation(this.bigDecimal.add((bd as BigDecimalImplementation?).Value.bigDecimal, (mathContext as MathContextImplementation).mathContext));
+
         }
 
         public int CompareTo(IBigDecimal bd)
@@ -65,9 +72,19 @@ namespace BigDecimalIKVM
             return new BigDecimalImplementation(this.bigDecimal.multiply((bd as BigDecimalImplementation?).Value.bigDecimal));
         }
 
+        public IBigDecimal Mul(IBigDecimal bd, IMathContext mathContext)
+        {
+            return new BigDecimalImplementation(this.bigDecimal.multiply((bd as BigDecimalImplementation?).Value.bigDecimal, (mathContext as MathContextImplementation).mathContext));
+        }
+
         public IBigDecimal Sub(IBigDecimal bd)
         {
             return new BigDecimalImplementation(this.bigDecimal.subtract((bd as BigDecimalImplementation?).Value.bigDecimal));
+        }
+
+        public IBigDecimal Sub(IBigDecimal bd, IMathContext mathContext)
+        {
+            return new BigDecimalImplementation(this.bigDecimal.subtract((bd as BigDecimalImplementation?).Value.bigDecimal, (mathContext as MathContextImplementation).mathContext));
         }
     }
 }

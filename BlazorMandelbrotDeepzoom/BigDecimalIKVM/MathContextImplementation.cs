@@ -8,7 +8,7 @@ namespace BigDecimalIKVM
 {
     class MathContextImplementation : IMathContext
     {
-        readonly MathContext mathContext;      
+        public readonly MathContext mathContext;      
 
         public MathContextImplementation(int i)
         {

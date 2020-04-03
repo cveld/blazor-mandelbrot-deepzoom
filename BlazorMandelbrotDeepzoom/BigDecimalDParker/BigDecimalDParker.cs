@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Numerics;
 using Mandelbrot;
+using BigDecimalContracts;
 
 namespace BigDecimalsDParker
 {
@@ -497,6 +498,19 @@ namespace BigDecimalsDParker
             return new BigDecimal(this);
         }
 
-        
+        public IBigDecimal Add(IBigDecimal bd, IMathContext mathContext)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IBigDecimal Mul(IBigDecimal bd, IMathContext mathContext)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IBigDecimal Sub(IBigDecimal bd, IMathContext mathContext)
+        {
+            throw new NotImplementedException();
+        }
     } // class
 } // namespace
