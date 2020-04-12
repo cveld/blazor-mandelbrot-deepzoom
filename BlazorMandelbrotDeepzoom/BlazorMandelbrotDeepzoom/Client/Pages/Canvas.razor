@@ -1,0 +1,69 @@
+﻿@page "/canvas"
+@using Blazor.Extensions.Canvas.Canvas2D
+@using Blazor.Extensions.Canvas.WebGL
+@using Blazor.Extensions
+@using Mandelbrot
+
+<h3>Canvas</h3>
+<BECanvas Width="400" Height="400" @ref="_canvasReference"></BECanvas>
+
+
+<form>
+    <div class="form-group row">
+        <label class="col-sm-2 col-form-label" for="x">x</label>
+        <input class="col-sm-10 form-control" id="x" @bind="x" type="text" placeholder="x" />
+    </div>
+    <div class="form-group row">
+        <label class="col-sm-2 col-form-label" for="y">y</label>
+        <input class="col-sm-10 form-control" id="y" @bind="y" type="text" placeholder="y" />
+    </div>
+    <div class="form-group row">
+        <label class="col-sm-2 col-form-label" for="horizontalsize">Horizontal size</label>
+        <input class="col-sm-10 form-control" id="horizontalsize" type="text" placeholder="Horizontal size" />
+    </div>
+    <div class="form-group row">
+        <div class="col-sm-2"></div>
+        <input class="col-sm-10 form-control" type="number" @onchange="listFromChanged" />
+    </div>
+    <div class="form-group row">
+        <button class="btn btn-primary mr-1" type="button" @onclick="ServerGenerate">Server</button><span> </span>
+        <button class="btn btn-primary mr-1" type="button" @onclick="Generate">Generate</button>
+        <button class="btn btn-primary mr-1" type="button" @onclick="Test">Test</button>
+    </div>
+</form>
+
+<div>
+    <h3>Fractal</h3>
+    @if (fractal != null && listFromNumberValid)
+    {
+        for (int row = 0; row < 16; row++)
+        {
+            @string.Format("{0:X4}", listFromNumber + row * 8)
+            for (int i = 0; i < 8; i++)
+            {
+                <span>@fractal[listFromNumber + i].ToString("D4")</span>
+            }
+            <br />
+        }
+    }
+</div>
+
+<div>
+    <h3>Image</h3>
+    @if (image != null && listFromNumberValid)
+    {
+        for (int row = 0; row < 16; row++)
+        {
+            @string.Format("{0:X4}", (listFromNumber + row * 4))
+            for (int i = 0; i < 16; i++)
+            {
+                <span>@image[(listFromNumber + row * 16) + i].ToString("X2")</span>
+            }
+            <br />
+        }
+    }
+</div>
+@code {
+
+
+}

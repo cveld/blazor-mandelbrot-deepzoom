@@ -1,0 +1,19 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="BigDecimalFromDouble.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="BigDecimalFromDouble.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\BigDecimalContracts\BigDecimalContracts.csproj" />
+  </ItemGroup>
+
+</Project>

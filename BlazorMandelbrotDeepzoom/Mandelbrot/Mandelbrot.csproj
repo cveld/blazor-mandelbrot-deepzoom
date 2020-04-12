@@ -1,0 +1,23 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="BigDecimalExtern.cs" />
+    <Compile Remove="MutableBigIntegerJava.cs" />
+    <Compile Remove="SFTPalette.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="BigDecimalExtern.cs" />
+    <None Include="SFTPalette.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\BigDecimalContracts\BigDecimalContracts.csproj" />
+    <ProjectReference Include="..\BigDecimalJavaMath\BigDecimalJavaMath.csproj" />
+  </ItemGroup>
+
+</Project>
