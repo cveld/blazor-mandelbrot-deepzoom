@@ -93,7 +93,7 @@ namespace BlazorMandelbrotDeepzoom.Client.Pages
         [JSInvokable]
         public void Dragged(Rect rect, bool drag)
         {
-            x = rect.StartX;
+            x = rect.startX;
             var r = new Random();
             y = r.Next();
             StateHasChanged();
