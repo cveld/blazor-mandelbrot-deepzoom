@@ -5,7 +5,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Numerics;
-using Mandelbrot;
 using BigDecimalContracts;
 
 namespace BigDecimalsDParker
@@ -19,6 +18,9 @@ namespace BigDecimalsDParker
         private static readonly BigInteger TEN = new BigInteger(10);
         private static readonly BigInteger ONE = new BigInteger(1);
         private static readonly BigInteger ZERO = new BigInteger(0);
+        private IMathContext mathContext;
+        private IMathContext mc;
+
         private BigInteger Value { get; set; }
         private int Precision { get; set; }
         private int MaxPrecision { get; set; }
@@ -86,6 +88,16 @@ namespace BigDecimalsDParker
             this.Value = BigInteger.Parse(s);
             this.Precision = s.Length - dec;
             
+        }
+
+        public BigDecimal(double d, IMathContext mc) : this(d.ToString(System.Globalization.CultureInfo.InvariantCulture), mc)
+        {
+            
+        }
+
+        public BigDecimal(string s, IMathContext mc) : this(s)
+        {
+            this.mc = mc;
         }
 
         public void HandleE(string s)
@@ -500,17 +512,28 @@ namespace BigDecimalsDParker
 
         public IBigDecimal Add(IBigDecimal bd, IMathContext mathContext)
         {
-            throw new NotImplementedException();
+            return Add(this, bd as BigDecimal, (mathContext as MathContext).Precision);
         }
 
         public IBigDecimal Mul(IBigDecimal bd, IMathContext mathContext)
         {
-            throw new NotImplementedException();
+            return Mul(this, bd as BigDecimal, (mathContext as MathContext).Precision);
         }
 
         public IBigDecimal Sub(IBigDecimal bd, IMathContext mathContext)
         {
-            throw new NotImplementedException();
+            return Sub(this, bd as BigDecimal, (mathContext as MathContext).Precision);
         }
+
+        IBigDecimal IBigDecimal.MovePointLeft(int i)
+        {
+            return new BigDecimal(Value, Precision - 1);            
+        }
+
+        IBigDecimal IBigDecimal.MovePointRight(int i)
+        {
+            return new BigDecimal(Value, Precision + 1);
+        }
+        
     } // class
 } // namespace

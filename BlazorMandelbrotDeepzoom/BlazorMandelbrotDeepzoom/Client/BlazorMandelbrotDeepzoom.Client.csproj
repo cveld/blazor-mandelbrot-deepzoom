@@ -1,12 +1,18 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>netstandard2.1</TargetFramework>
     <RazorLangVersion>3.0</RazorLangVersion>
+    <TypeScriptCompileBlocked>true</TypeScriptCompileBlocked>
   </PropertyGroup>
 
   <ItemGroup>
+    <Content Remove="package.json" />
     <Content Remove="wwwroot\scripts\canvasinterop.ts" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="src\Utility.ts" />
   </ItemGroup>
 
   <ItemGroup>
@@ -21,11 +27,16 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\..\..\BlazorExtensions\Canvas\src\Blazor.Extensions.Canvas\Blazor.Extensions.Canvas.csproj" />
+    <ProjectReference Include="..\..\BigDecimalDParker\BigDecimalDParker.csproj" />
     <ProjectReference Include="..\..\Mandelbrot\Mandelbrot.csproj" />
     <ProjectReference Include="..\Shared\BlazorMandelbrotDeepzoom.Shared.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <TypeScriptCompile Include="wwwroot\scripts\canvasinterop.ts" />
+    <Folder Include="dist\" />
+    <Folder Include="wwwroot\scripts\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="package.json" />
   </ItemGroup>
 
 </Project>

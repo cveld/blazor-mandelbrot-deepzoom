@@ -12,5 +12,7 @@ namespace BigDecimalsDParker
         {
             this.precision = precision;
         }
+
+        public int Precision => precision;
     }
 }

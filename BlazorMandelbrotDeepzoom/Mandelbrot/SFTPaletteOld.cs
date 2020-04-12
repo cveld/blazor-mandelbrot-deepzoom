@@ -279,7 +279,7 @@ public class SFTPaletteOld : IPalette
 			mBands[j].Apply(mColour, i);
 		}
 
-		mPalette[i] = (uint)(0xff000000+mColour[2] + ((mColour[1])<<8) + (mColour[0]<<16));
+		mPalette[i] = (uint)(0xff000000+mColour[0] + ((mColour[1])<<8) + (mColour[2]<<16));
 		return mPalette[i];
 	}
 

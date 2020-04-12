@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Mandelbrot
+namespace BigDecimalContracts
 {
     public interface IBigDecimalFactory
     {

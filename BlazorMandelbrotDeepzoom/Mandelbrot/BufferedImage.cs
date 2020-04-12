@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Mandelbrot
 {
-    public class BufferedImage
+    public class BufferedImage : IMandelbrotImage
     {
         public uint[] pixels;
         public int Width { get; }
@@ -16,8 +16,8 @@ namespace Mandelbrot
             pixels = new uint[w * h * 4];
         }
 
-        public void setRGB(int x, int y, uint color) {
-            int index = x * y * 4;
+        public void SetRGB(int x, int y, uint color) {
+            int index = (x + y * Width) * 4;
             pixels[index] = (uint)(color & 0xFF); // R
             pixels[index + 1] = (uint)(color << 8 & 0xFF); // G
             pixels[index + 2] = (uint)(color << 16 & 0xFF); // B

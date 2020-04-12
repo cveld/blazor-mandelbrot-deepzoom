@@ -6,9 +6,14 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="IKVM" Version="8.1.5717" />
+    <PackageReference Include="SixLabors.ImageSharp" Version="1.0.0-beta0007" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\BigDecimalContracts\BigDecimalContracts.csproj" />
     <ProjectReference Include="..\BigDecimalDParker\BigDecimalDParker.csproj" />
-    <ProjectReference Include="..\BigDecimalJavaMath\BigDecimalJavaMath.csproj" />
+    <ProjectReference Include="..\BigDecimalIKVM\BigDecimalIKVM.csproj" />
     <ProjectReference Include="..\Mandelbrot\Mandelbrot.csproj" />
   </ItemGroup>
 

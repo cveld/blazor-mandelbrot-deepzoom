@@ -15,17 +15,15 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Blazor.Extensions.Canvas", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Blazor.Extensions.Canvas.JS", "..\..\..\BlazorExtensions\Canvas\src\Blazor.Extensions.Canvas.JS\Blazor.Extensions.Canvas.JS.csproj", "{3969A92A-17A0-4016-B7B0-88B23A0DDEBE}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MandelbrotTest", "MandelbrotTest\MandelbrotTest.csproj", "{DCE77737-70B7-432D-95A9-DF3082D8ECD6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BigDecimalContracts", "BigDecimalContracts\BigDecimalContracts.csproj", "{0E183B96-244C-46C3-8333-13649E180115}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MandelbrotTest2", "MandelbrotTest2\MandelbrotTest2.csproj", "{785D6F81-BF62-4339-9855-E12D1D30CC04}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BigDecimalDParker", "BigDecimalDParker\BigDecimalDParker.csproj", "{5FEBA96A-E741-4E59-B0D1-2B82A35EE791}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BigDecimalContracts", "BigDecimalContracts\BigDecimalContracts.csproj", "{0E183B96-244C-46C3-8333-13649E180115}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BigDecimalJavaMath", "BigDecimalJavaMath\BigDecimalJavaMath.csproj", "{2648F3A1-1B58-4ED4-9DED-23341117E6C2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BigDecimalDParker", "BigDecimalDParker\BigDecimalDParker.csproj", "{5FEBA96A-E741-4E59-B0D1-2B82A35EE791}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BigDecimalIKVM", "BigDecimalIKVM\BigDecimalIKVM.csproj", "{4128ECA5-E3AE-433E-A94C-8A9DF2133774}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BigDecimalJavaMath", "BigDecimalJavaMath\BigDecimalJavaMath.csproj", "{2648F3A1-1B58-4ED4-9DED-23341117E6C2}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BigDecimalIKVM", "BigDecimalIKVM\BigDecimalIKVM.csproj", "{4128ECA5-E3AE-433E-A94C-8A9DF2133774}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MandelbrotTest", "MandelbrotTest\MandelbrotTest.csproj", "{DDD291F5-0CAC-4B3A-86C9-81F8499596D8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -57,14 +55,6 @@ Global
 		{3969A92A-17A0-4016-B7B0-88B23A0DDEBE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3969A92A-17A0-4016-B7B0-88B23A0DDEBE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3969A92A-17A0-4016-B7B0-88B23A0DDEBE}.Release|Any CPU.Build.0 = Release|Any CPU
-		{DCE77737-70B7-432D-95A9-DF3082D8ECD6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{DCE77737-70B7-432D-95A9-DF3082D8ECD6}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{DCE77737-70B7-432D-95A9-DF3082D8ECD6}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{DCE77737-70B7-432D-95A9-DF3082D8ECD6}.Release|Any CPU.Build.0 = Release|Any CPU
-		{785D6F81-BF62-4339-9855-E12D1D30CC04}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{785D6F81-BF62-4339-9855-E12D1D30CC04}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{785D6F81-BF62-4339-9855-E12D1D30CC04}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{785D6F81-BF62-4339-9855-E12D1D30CC04}.Release|Any CPU.Build.0 = Release|Any CPU
 		{0E183B96-244C-46C3-8333-13649E180115}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{0E183B96-244C-46C3-8333-13649E180115}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0E183B96-244C-46C3-8333-13649E180115}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -81,6 +71,10 @@ Global
 		{4128ECA5-E3AE-433E-A94C-8A9DF2133774}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4128ECA5-E3AE-433E-A94C-8A9DF2133774}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4128ECA5-E3AE-433E-A94C-8A9DF2133774}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DDD291F5-0CAC-4B3A-86C9-81F8499596D8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DDD291F5-0CAC-4B3A-86C9-81F8499596D8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DDD291F5-0CAC-4B3A-86C9-81F8499596D8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DDD291F5-0CAC-4B3A-86C9-81F8499596D8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

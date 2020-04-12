@@ -18,6 +18,6 @@ namespace BigDecimalIKVM
         public MathContextImplementation(MathContext mc)
         {
             this.mathContext = mc;
-        }
+        }      
     }
 }

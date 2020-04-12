@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Mandelbrot
+namespace BigDecimalContracts
 {
     public interface IBigDecimal
     {
@@ -11,8 +11,8 @@ namespace Mandelbrot
         IBigDecimal MovePointLeft(int i);
         IBigDecimal MovePointRight(int i);
         double DoubleValue();
-        IBigDecimal Add(IBigDecimal bd); 
-        IBigDecimal Add(IBigDecimal bd, IMathContext mathContext); 
+        IBigDecimal Add(IBigDecimal bd);
+        IBigDecimal Add(IBigDecimal bd, IMathContext mathContext);
         IBigDecimal Mul(IBigDecimal bd);
         IBigDecimal Mul(IBigDecimal bd, IMathContext mathContext);
         IBigDecimal Sub(IBigDecimal bd);

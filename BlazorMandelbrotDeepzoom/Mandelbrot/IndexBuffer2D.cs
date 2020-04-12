@@ -110,9 +110,9 @@ public class IndexBuffer2D
 		return (float)mWidth/mHeight;
 	}	
 	
-	public BufferedImage MakeTexture( IPalette aPalette, SuperSampleType aSuper_sample)
+	public IMandelbrotImage MakeTexture(IImageBuilder imageBuilder, IPalette aPalette, SuperSampleType aSuper_sample)
 	{
-		BufferedImage image=null;
+		IMandelbrotImage image =null;
 		int x,y,i,j,k,l,m,n,o,p,q, w,h,y2;
 
 		try
@@ -120,20 +120,20 @@ public class IndexBuffer2D
 			switch (aSuper_sample)
 			{
 			case SuperSampleType.SUPER_SAMPLE_NONE:
-				image = new BufferedImage(mWidth, mHeight);
+				image = imageBuilder.Build(mWidth, mHeight);
 			
 				for (y=0,y2=mHeight-1; y<mHeight; y++,y2--)
 					for (x=0; x<mWidth; x++)
 					{
 						i=GetValue(x,y);
-			       		image.setRGB(x, y2, aPalette.GetColour(i));	
+			       		image.SetRGB(x, y2, aPalette.GetColour(i));	
 			       	 				
 					}
 				break;
 			case SuperSampleType.SUPER_SAMPLE_2X:
 				w = mWidth-1;
 				h = mHeight/2;
-				image = new BufferedImage(w, h);
+				image = imageBuilder.Build(w, h);
 				
 				for (y=0,y2=h-1; y<h; y++,y2--)
 					for (x=0; x<w; x++)
@@ -142,13 +142,13 @@ public class IndexBuffer2D
 						j=GetValue(x,y+1);
 						k=GetValue(x,y+h+1);
 						l=GetValue(x+1,y+h+1);
-			       		image.setRGB(x, y2,aPalette.GetAverageColour(i,j,k,l));					
+			       		image.SetRGB(x, y2,aPalette.GetAverageColour(i,j,k,l));					
 					}
 				break;
 			case SuperSampleType.SUPER_SAMPLE_4X:
 				w = mWidth/2;
 				h = mHeight/2;
-				image = new BufferedImage(w, h);
+				image = imageBuilder.Build(w, h);
 				
 				for (y=0,y2=mHeight-2; y<mHeight; y+=2,y2-=2)
 					for (x=0; x<mWidth; x+=2)
@@ -157,13 +157,13 @@ public class IndexBuffer2D
 						j=GetValue(x,y+1);
 						k=GetValue(x+1,y+1);
 						l=GetValue(x+1,y);
-			       		image.setRGB(x/2, y2/2,aPalette.GetAverageColour(i,j,k,l));					
+			       		image.SetRGB(x/2, y2/2,aPalette.GetAverageColour(i,j,k,l));					
 					}
 				break;
 			case SuperSampleType.SUPER_SAMPLE_4X_9:
 				w = mWidth/2;
 				h = mHeight/2;
-				image = new BufferedImage(w, h);
+				image = imageBuilder.Build(w, h);
 				
 				for (y=0,y2=mHeight-3; y<mHeight-1; y+=2,y2-=2)
 					for (x=0; x<mWidth-1; x+=2)
@@ -177,13 +177,13 @@ public class IndexBuffer2D
 						o=GetValue(x+2,y+2);
 						p=GetValue(x+1,y+2);
 						q=GetValue(x,y+2);
-			       		image.setRGB(x/2, y2/2,aPalette.GetAverageColour(i,j,k,l,m,n,o,p,q));					
+			       		image.SetRGB(x/2, y2/2,aPalette.GetAverageColour(i,j,k,l,m,n,o,p,q));					
 					}
 				break;
 			case SuperSampleType.SUPER_SAMPLE_9X:
 				w = mWidth/3;
 				h = mHeight/3;
-				image = new BufferedImage(w, h);
+				image = imageBuilder.Build(w, h);
 				
 				for (y=0,y2=mHeight-2; y<mHeight; y+=3,y2-=3)
 					for (x=0; x<mWidth; x+=3)
@@ -197,7 +197,7 @@ public class IndexBuffer2D
 						o=GetValue(x+2,y+2);
 						p=GetValue(x+1,y+2);
 						q=GetValue(x,y+2);
-			       		image.setRGB(x/3, y2/3,aPalette.GetAverageColour(i,j,k,l,m,n,o,p,q));					
+			       		image.SetRGB(x/3, y2/3,aPalette.GetAverageColour(i,j,k,l,m,n,o,p,q));					
 					}
 				break;
 			}

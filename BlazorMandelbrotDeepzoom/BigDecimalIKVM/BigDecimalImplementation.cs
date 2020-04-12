@@ -1,6 +1,5 @@
 ﻿using BigDecimalContracts;
 using java.math;
-using Mandelbrot;
 using System;
 using System.Collections.Generic;
 using System.Text;

@@ -5,6 +5,6 @@ using System.Text;
 namespace BigDecimalContracts
 {
     public interface IMathContext
-    {
+    {        
     }
 }

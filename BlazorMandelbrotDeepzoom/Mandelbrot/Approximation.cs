@@ -21,7 +21,7 @@
 //    along with SuperFractalThing.  If not, see <http://www.gnu.org/licenses/>.
 // 
 
-using Mandelbrot;
+using BigDecimalContracts;
 using System;
 
 public class Approximation {

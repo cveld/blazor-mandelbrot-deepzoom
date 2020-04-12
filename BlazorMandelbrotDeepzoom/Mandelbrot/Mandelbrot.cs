@@ -36,16 +36,15 @@ namespace Mandelbrot
 		IBigDecimal mPos, mPosi;
 		int mMax_iterations;
 		CalculationManager mCalculation;
-		int mResolution_x;
-		int mResolution_y;
 		IndexBuffer2D buffer;
 		private readonly IBigDecimalFactory bigDecimalFactory;
 		private readonly IMathContextFactory mathContextFactory;
 
-		public IndexBuffer2D DoCalculation(int aResolution_x, int aResolution_y, SuperSampleType aSuper_sample)
+		public IndexBuffer2D DoCalculation(SuperSampleType aSuper_sample)
 		{
-			mResolution_x = aResolution_x;
-			mResolution_y = aResolution_y;
+			int mResolution_x = Width;
+			int mResolution_y = Height;
+
 			IBigDecimal[] coords = new IBigDecimal[2];
 
 			//mGui.StartProcessing();
@@ -68,7 +67,7 @@ namespace Mandelbrot
 
 			//IndexBuffer2D buffer = null;
 
-			buffer = new IndexBuffer2D(aResolution_x, aResolution_y);
+			buffer = new IndexBuffer2D(Width, Height);
 			//switch (aSuper_sample)
 			//{
 			//	case SUPER_SAMPLE_NONE:
