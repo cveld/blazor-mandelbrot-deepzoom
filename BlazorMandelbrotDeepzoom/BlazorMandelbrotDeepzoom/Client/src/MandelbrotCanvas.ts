@@ -12,31 +12,39 @@ declare class DotNet {
 export class MandelbrotCanvas {
     ctx: CanvasRenderingContext2D;
     mandelbrot: ImageData;
-    rect: { startX?, startY?, w?, h?} = {};
+    xw: number;
+    yw: number;
+    rect: { startX?, startY?, w?} = {};
     drag = false;
     dotnetobjref;
-   
-    drawPixels(x: number, y: number, xw: number, yw: number, pixelsbase64: string): void {
+
+    drawPixelsString(pixelsbase64: string): void {
         //const pixels = new Uint8Array(atob(pixelsbase64).split("").map(function (c) {
         //    return c.charCodeAt(0);
         //}));
-
         const pixels = base64ToArrayBuffer(pixelsbase64);
-
-        this.mandelbrot = this.ctx.createImageData(xw, yw);
-
-        // let imageIdx = 0;
-        // Iterate through every pixel
-        for (let i = 0; i < pixels.length; i++) {
-            // Modify pixel data
-            this.mandelbrot.data[i] = pixels[i];
-        }
-
-        // Draw image data to the canvas
-        this.ctx.putImageData(this.mandelbrot, x, y);
+        this.drawPixelsUint8Array(pixels);      
+        // Draw image data to the canvas        
     }
 
-    init(id: number, dotnetobjref) {
+    drawPixelsUint8Array(pixels: Uint8Array): void {
+        for (let i = 0; i < pixels.length; i++) {
+            this.mandelbrot.data[i] = pixels[i];
+        }        
+        this.draw();
+    }
+
+    getImageFromServer(url: string) {
+        fetch(url).then(response => {
+            response.arrayBuffer().then(arrayBuffer => {
+                this.drawPixelsUint8Array(new Uint8Array(arrayBuffer));
+            });
+        });
+    }
+
+    init(id: number, dotnetobjref, xw, yw) {
+        this.xw = xw;
+        this.yw = yw;        
         this.dotnetobjref = dotnetobjref;
         this.ctx = BlazorExtensions.Canvas2d.getContext({
             id: id
@@ -44,7 +52,7 @@ export class MandelbrotCanvas {
         this.ctx.canvas.addEventListener('mousedown', (e) => this.mouseDown(e), false);
         this.ctx.canvas.addEventListener('mouseup', (e) => this.mouseUp(e), false);
         this.ctx.canvas.addEventListener('mousemove', (e) => this.mouseMove(e), false);
-
+        this.mandelbrot = this.ctx.createImageData(xw, yw);
     }
 
     mouseDown(e: MouseEvent) {
@@ -63,8 +71,9 @@ export class MandelbrotCanvas {
     mouseMove(e: MouseEvent) {
         const element = e.target as HTMLElement;
         if (this.drag) {
-            this.rect.w = (e.pageX - element.offsetLeft) - this.rect.startX;
-            this.rect.h = (e.pageY - element.offsetTop) - this.rect.startY;            
+            const w = (e.pageX - element.offsetLeft) - this.rect.startX;
+            const h = (e.pageY - element.offsetTop) - this.rect.startY;   
+            this.rect.w = w > h ? w : h; 
             this.draw();
             this.dotnetobjref.invokeMethod('Dragged', this.rect, this.drag);
         }
@@ -77,10 +86,13 @@ export class MandelbrotCanvas {
         else {
             this.ctx.clearRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
         }
-        if (this.drag) {
+        if (this.rect.startX) {
             this.ctx.setLineDash([6]);
             this.ctx.strokeStyle = "#C0C0C0";
-            this.ctx.strokeRect(this.rect.startX, this.rect.startY, this.rect.w, this.rect.h);
+            this.ctx.strokeRect(
+                this.rect.startX - this.rect.w,
+                this.rect.startY - this.rect.w * this.yw / this.xw,
+                2 * this.rect.w, 2 * this.rect.w * this.yw / this.xw);
         }
     }
 

@@ -82,6 +82,24 @@ namespace BigDecimalIKVM
             return new BigDecimalImplementation(this.bigDecimal.multiply((bd as BigDecimalImplementation?).Value.bigDecimal, (mathContext as MathContextImplementation).mathContext));
         }
 
+        public IBigDecimal SetJavaScale(int scale, BigDecimalRoundingEnum bigDecimalRoundingEnum)
+        {
+            // BigDecimal.ROUND_HALF_DOWN
+            switch (bigDecimalRoundingEnum)
+            {
+                case BigDecimalRoundingEnum.HALF_UP:
+                    return new BigDecimalImplementation(this.bigDecimal.setScale(scale, RoundingMode.HALF_UP));
+                case BigDecimalRoundingEnum.ROUND_HALF_DOWN:
+                    return new BigDecimalImplementation(this.bigDecimal.setScale(scale, BigDecimal.ROUND_HALF_DOWN));
+            }
+            throw new ArgumentOutOfRangeException(nameof(bigDecimalRoundingEnum));
+        }
+
+        public IBigDecimal StripTrailingZeros()
+        {
+            return new BigDecimalImplementation(this.bigDecimal.stripTrailingZeros());
+        }
+
         public IBigDecimal Sub(IBigDecimal bd)
         {
             return new BigDecimalImplementation(this.bigDecimal.subtract((bd as BigDecimalImplementation?).Value.bigDecimal));

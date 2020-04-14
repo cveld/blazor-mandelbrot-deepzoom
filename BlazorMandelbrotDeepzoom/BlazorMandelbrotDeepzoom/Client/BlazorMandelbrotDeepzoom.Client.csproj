@@ -32,7 +32,6 @@
     <ProjectReference Include="..\Shared\BlazorMandelbrotDeepzoom.Shared.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="dist\" />
     <Folder Include="wwwroot\scripts\" />
   </ItemGroup>
   <ItemGroup>
