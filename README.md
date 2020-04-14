@@ -29,7 +29,7 @@ For calculating the reference point you will need arbitrary precision arithmetic
 We have found dparker1's implementation on GitHub: https://github.com/dparker1/BigDecimal/ and extended it a bit in order to match the requirements by the java BigDecimal consumer. We also started to port the java reference implementation, but this is still work in progress.
 
 ## Running .NET in the browser: Blazor
-Microsoft is currently working on a .NET runtime in the browser as part of Blazor WebAssembly. We noticed right away that calculating the fractal in the WebAssembly .NET runtime is incredibly slow. This is obviously caused by the fact that the runtime currently just interprets the intermediate language instead of running a compiled WebAssembly binary. Another fact is that WebAssembly currently does not have immediate access to the html5 DOM and apis. So interacting with an html5 canvas element has to go through JavaScript interop. Interestingly, Rust has a wrapper library called `web_sys`. 
+Microsoft is currently working on a .NET runtime in the browser as part of Blazor WebAssembly. We noticed right away that calculating the fractal in the WebAssembly .NET runtime is incredibly slow. This is obviously caused by the fact that the runtime currently just interprets the intermediate language instead of running a compiled WebAssembly binary. Another fact is that WebAssembly currently does not have immediate access to the html5 DOM and apis. So interacting with an html5 canvas element has to go through JavaScript interop. Interestingly, Rust has a wrapper library called `web_sys`. Refer to https://rustwasm.github.io/wasm-bindgen/web-sys/index.html
 
 ## Screenshot
 ![Mandelbrot rendering](media/mandelbrot.png)

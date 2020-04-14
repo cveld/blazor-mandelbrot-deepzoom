@@ -21,12 +21,14 @@
 //    along with SuperFractalThing.  If not, see <http://www.gnu.org/licenses/>.
 // 
 
-using System;
-using System.Collections.Generic;
-using System.Collections.Specialized;
-using System.Linq;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeMap;
 
-class FBRPEntry
+
+
+	class FBRPEntry
 	{
 		public FBRPEntry()
 		{
@@ -37,21 +39,21 @@ class FBRPEntry
 		}
 		
 		public int count;
-		public float total_p;
-		public float total_q;
-		public float non_averaged_p;
-		public float non_averaged_q;
-		public float d;
+		float total_p;
+		float total_q;
+		float non_averaged_p;
+		float non_averaged_q;
+		float d;
 
 	}
 	
 public class FindBestreferencePoint
 {
-	SortedDictionary<int, FBRPEntry> mMap;
+TreeMap<Integer,FBRPEntry> mMap;
 Details mDetails;
 int mMax_count_depth;
 int mNum_above_accuracy_limit;
-int[,] mArray;
+int mArray[][];
 
 int mSteps_p;
 int mSteps_q;
@@ -60,17 +62,17 @@ float mQ_start;
 float mP_step;
 float mQ_step;
 
-KeyValuePair<int,FBRPEntry> mMax_count;
+Map.Entry<Integer,FBRPEntry> mMax_count;
 
 	public FindBestreferencePoint(Details aDetails)
 	{
 		mDetails = aDetails;
 		mNum_above_accuracy_limit=0;
-		mArray = new int[20,20];
-		mMap = new SortedDictionary<int,FBRPEntry>();
+		mArray = new int[20][20];
+		mMap = new TreeMap<Integer,FBRPEntry>();
 	}
 	
-	void GetTopAverage(int aCount, float[] pq)
+	void GetTopAverage(int aCount, float pq[] )
 	{
 /*		std::map<int, FBRPEntry>::reverse_iterator itr;
 		int c=0;
@@ -94,12 +96,12 @@ KeyValuePair<int,FBRPEntry> mMax_count;
 		return (x2-x1)*(x2-x1)+(y2-y1)*(y2-y1);
 	}
 
-	public Details Calculate()
+	Details Calculate()
 	{
-		float[] pq = new float[2];
+		float pq[] = new float[2];
 		float p=0,q=0;
 		int i;
-		bool clear=false;
+		boolean clear=false;
 		int pass;
 		float repeater_fail_distance=0;
 		
@@ -107,8 +109,8 @@ KeyValuePair<int,FBRPEntry> mMax_count;
 			return mDetails;
 
 
-		bool failed_repeater_bodge=mDetails.GetIsFailedRepeater();
-		bool skip_zoom_bodge = false;
+		boolean failed_repeater_bodge=mDetails.GetIsFailedRepeater();
+		boolean skip_zoom_bodge = false;
 
 		Details centre_check_details = null;
 		
@@ -140,16 +142,16 @@ KeyValuePair<int,FBRPEntry> mMax_count;
 		DoAPass( 0,0, 1.6f,1.6f, 9 );
 		
 		//std::map<int, FBRPEntry>::reverse_iterator top,top2,top3;
-		KeyValuePair<int,FBRPEntry> top,top2,top3;
+		Map.Entry<Integer,FBRPEntry> top,top2,top3;
 		
 		
-		for (pass = 0; pass < 100; pass++)
+		for (pass=0; pass<100; pass++)
 		{
-			var set = mMap.GetEnumerator();
-			set.MoveNext();
-			top = set.Current;
-			if (set.MoveNext())
-				top2 = set.Current;
+			Set<Map.Entry<Integer,FBRPEntry>> set = mMap.entrySet();
+			Iterator<Map.Entry<Integer,FBRPEntry>> itr = set.iterator();
+			top = itr.next();
+			if (itr.hasNext())
+				top2 = itr.next();
 			else
 				top2 = top;
 			
@@ -161,24 +163,24 @@ KeyValuePair<int,FBRPEntry> mMax_count;
 			top3 = mMax_count;
 
 			
-			p = (top.Value).total_p/(top.Value).count;
-			q = (top.Value).total_q/(top.Value).count;
+			p = (top.getValue()).total_p/(top.getValue()).count;
+			q = (top.getValue()).total_q/(top.getValue()).count;
 
 			// stop us going back to repeater
 			if ( mDetails.GetIsFailedRepeater() )
 			{
-	/*			while ((top.Value).count == 1 &&
+	/*			while ((top.getValue()).count == 1 &&
 					(p-initial_p)*(p-initial_p)+(q-initial_q)*(q-initial_q) < 1.6f*1.6f*0.125f/100.0f)
 				{
 					top++;
-					p = (top.Value).total_p/(top.Value).count;
-					q = (top.Value).total_q/(top.Value).count;
+					p = (top.getValue()).total_p/(top.getValue()).count;
+					q = (top.getValue()).total_q/(top.getValue()).count;
 				}
 	*/		}
-			/*else*/ if ((top.Value).count==1 && (top2.Value).count==1 &&
-					 (Math.Abs( (top.Value).total_p - (top2.Value).total_p ) > range/9 * 1.5f ||
-					  Math.Abs( (top.Value).total_q - (top2.Value).total_q ) > range/9 * 1.5f ) &&
-						 ((mMax_count.Value).count<10 || (mMax_count.Value).count<mMax_count_depth*2))		//Added 30/10/2010
+			/*else*/ if ((top.getValue()).count==1 && (top2.getValue()).count==1 &&
+					 (Math.abs( (top.getValue()).total_p - (top2.getValue()).total_p ) > range/9 * 1.5f ||
+					  Math.abs( (top.getValue()).total_q - (top2.getValue()).total_q ) > range/9 * 1.5f ) &&
+						 ((mMax_count.getValue()).count<10 || (mMax_count.getValue()).count<mMax_count_depth*2))		//Added 30/10/2010
 			{
 				int x,y,max_i=-1, max_x=0,max_y=0;
 				float repeater_x = (initial_p - mP_start)/mP_step;
@@ -187,8 +189,8 @@ KeyValuePair<int,FBRPEntry> mMax_count;
 				for (y=0; y<mSteps_p-1; y++)
 					for (x=0; x<mSteps_q-1; x++)
 					{
-						i = mArray[y,x]+mArray[y,x+1]+mArray[y+1,x+1]+mArray[y+1,x];
-						i -= Math.Max( Math.Max(mArray[y,x],mArray[y,x+1]), Math.Max(mArray[y+1,x+1],mArray[y+1,x]) );
+						i = mArray[y][x]+mArray[y][x+1]+mArray[y+1][x+1]+mArray[y+1][x];
+						i -= Math.max( Math.max(mArray[y][x],mArray[y][x+1]), Math.max(mArray[y+1][x+1],mArray[y+1][x]) );
 						
 						if (mDetails.GetIsFailedRepeater() && repeater_x >=x && repeater_x <= x+1 && repeater_y >= y && repeater_y <= y+1)
 							i-=900;
@@ -199,24 +201,24 @@ KeyValuePair<int,FBRPEntry> mMax_count;
 							max_i = i;
 						}
 					}
-
-				int min_i = mMap.Keys.Max();
-				float np, nq;
-				np = (mP_start + mP_step * (max_x+0)) * (mArray[max_y,max_x]-min_i);
-				nq = (mQ_start + mQ_step * (max_y+0)) * (mArray[max_y,max_x]-min_i);
-				np += (mP_start + mP_step * (max_x+1)) * (mArray[max_y,max_x+1]-min_i);
-				nq += (mQ_start + mQ_step * (max_y+0)) * (mArray[max_y,max_x+1]-min_i);
-				np += (mP_start + mP_step * (max_x+1)) * (mArray[max_y+1,max_x+1]-min_i);
-				nq += (mQ_start + mQ_step * (max_y+1)) * (mArray[max_y+1,max_x+1]-min_i);
-				np += (mP_start + mP_step * (max_x+0)) * (mArray[max_y+1,max_x+0]-min_i);
-				nq += (mQ_start + mQ_step * (max_y+1)) * (mArray[max_y+1,max_x+0]-min_i);
 				
-				np/=(mArray[max_y,max_x]+mArray[max_y,max_x+1]+mArray[max_y+1,max_x+1]+mArray[max_y+1,max_x]-4*min_i);
-				nq/=(mArray[max_y,max_x]+mArray[max_y,max_x+1]+mArray[max_y+1,max_x+1]+mArray[max_y+1,max_x]-4*min_i);
+				int min_i =  mMap.lastKey();
+				float np, nq;
+				np = (mP_start + mP_step * (max_x+0)) * (mArray[max_y][max_x]-min_i);
+				nq = (mQ_start + mQ_step * (max_y+0)) * (mArray[max_y][max_x]-min_i);
+				np += (mP_start + mP_step * (max_x+1)) * (mArray[max_y][max_x+1]-min_i);
+				nq += (mQ_start + mQ_step * (max_y+0)) * (mArray[max_y][max_x+1]-min_i);
+				np += (mP_start + mP_step * (max_x+1)) * (mArray[max_y+1][max_x+1]-min_i);
+				nq += (mQ_start + mQ_step * (max_y+1)) * (mArray[max_y+1][max_x+1]-min_i);
+				np += (mP_start + mP_step * (max_x+0)) * (mArray[max_y+1][max_x+0]-min_i);
+				nq += (mQ_start + mQ_step * (max_y+1)) * (mArray[max_y+1][max_x+0]-min_i);
+				
+				np/=(mArray[max_y][max_x]+mArray[max_y][max_x+1]+mArray[max_y+1][max_x+1]+mArray[max_y+1][max_x]-4*min_i);
+				nq/=(mArray[max_y][max_x]+mArray[max_y][max_x+1]+mArray[max_y+1][max_x+1]+mArray[max_y+1][max_x]-4*min_i);
 				//p = mP_start + mP_step * (max_x+0.5);
 				//q = mQ_start + mQ_step * (max_y+0.5);
 				
-				repeater_fail_distance =Math.Min(repeater_fail_distance, range*0.25f);
+				repeater_fail_distance =Math.min(repeater_fail_distance, range*0.25f);
 				if (repeater_fail_distance==0 || DistanceSquare( np,nq, initial_p, initial_q ) > repeater_fail_distance *0.25f)
 				{
 
@@ -229,7 +231,7 @@ KeyValuePair<int,FBRPEntry> mMax_count;
 					if (range <= 1/50.0f)
 						break;
 					
-					if (pass==0 && (Math.Abs(p)>0.3 || Math.Abs(q)>0.3) && !mDetails.GetIsFailedRepeater())
+					if (pass==0 && (Math.abs(p)>0.3 || Math.abs(q)>0.3) && !mDetails.GetIsFailedRepeater())
 					{
 						centre_check_details = new Details(mDetails);
 					}
@@ -240,10 +242,10 @@ KeyValuePair<int,FBRPEntry> mMax_count;
 					else 
 					{
 						//31.10.2010 make sure we don't drift away from main point
-						if (Math.Abs(mDetails.GetScreenOffsetX() - p) > range/2)
-							range = Math.Abs(mDetails.GetScreenOffsetX() - p) * 2.1f;
-						if (Math.Abs(mDetails.GetScreenOffsetY() - q) > range/2)
-							range = Math.Abs(mDetails.GetScreenOffsetY() - q) * 2.1f;
+						if (Math.abs(mDetails.GetScreenOffsetX() - p) > range/2)
+							range = Math.abs(mDetails.GetScreenOffsetX() - p) * 2.1f;
+						if (Math.abs(mDetails.GetScreenOffsetY() - q) > range/2)
+							range = Math.abs(mDetails.GetScreenOffsetY() - q) * 2.1f;
 						
 						if (range > old_range*0.98f)
 							range=  old_range*0.98f;	//make sure we don't get stuck
@@ -261,50 +263,50 @@ KeyValuePair<int,FBRPEntry> mMax_count;
 				}
 			}
 
-			if (mDetails.GetIsFailedRepeater() && (top.Value).count == 1 && 
-				Math.Abs((top.Value).total_p - initial_p) < mP_step/2 &&
-				Math.Abs((top.Value).total_q - initial_q) < mQ_step/2)
+			if (mDetails.GetIsFailedRepeater() && (top.getValue()).count == 1 && 
+				Math.abs((top.getValue()).total_p - initial_p) < mP_step/2 &&
+				Math.abs((top.getValue()).total_q - initial_q) < mQ_step/2)
 			{
 				top = top2;
-				if ((top3.Value).count > (top2.Value).count*2 && -top3.Key > mDetails.GetTotalIterations())
+				if ((top3.getValue()).count > (top2.getValue()).count*2 && -top3.getKey() > mDetails.GetTotalIterations())
 				{
 					top = top3;
 				}
-				else while (set.MoveNext() &&
-								mDetails.GetIsFailedRepeater() && (top.Value).count == 1 && 
-								Math.Abs((top.Value).total_p - initial_p) < mP_step*0.6f &&
-								Math.Abs((top.Value).total_q - initial_q) < mQ_step*0.6f)
+				else while (itr.hasNext() &&
+								mDetails.GetIsFailedRepeater() && (top.getValue()).count == 1 && 
+								Math.abs((top.getValue()).total_p - initial_p) < mP_step*0.6f &&
+								Math.abs((top.getValue()).total_q - initial_q) < mQ_step*0.6f)
 				{
-					top= set.Current;
+					top=itr.next();
 				}
 					
 			}
-			else if ((top2.Value).count > (top.Value).count*5 ||
-					((top.Value).count ==1 && failed_repeater_bodge && (top.Value).count > (top.Value).count) ||
-						((top2.Value).count >= 3*(top.Value).count && (top3.Value).count >= 3*(top.Value).count))
+			else if ((top2.getValue()).count > (top.getValue()).count*5 ||
+					((top.getValue()).count ==1 && failed_repeater_bodge && (top.getValue()).count > (top.getValue()).count) ||
+						((top2.getValue()).count >= 3*(top.getValue()).count && (top3.getValue()).count >= 3*(top.getValue()).count))
 			{
 				top = top2;
 				
 			}
-			else if ((top3.Value).count > (top2.Value).count*5 && (-top3.Key > mDetails.GetTotalIterations() || (top3.Value).count > mMax_count_depth*2))
+			else if ((top3.getValue()).count > (top2.getValue()).count*5 && (-top3.getKey() > mDetails.GetTotalIterations() || (top3.getValue()).count > mMax_count_depth*2))
 			{
 				top = top3;
 			}
 			
-			p = (top.Value).total_p/(top.Value).count;
-			q = (top.Value).total_q/(top.Value).count;
+			p = (top.getValue()).total_p/(top.getValue()).count;
+			q = (top.getValue()).total_q/(top.getValue()).count;
 			
 			
-			if (pass==0 && (Math.Abs(p)>0.3 || Math.Abs(q)>0.3) && !mDetails.GetIsFailedRepeater())
+			if (pass==0 && (Math.abs(p)>0.3 || Math.abs(q)>0.3) && !mDetails.GetIsFailedRepeater())
 			{
 				centre_check_details = new Details(mDetails);
 			}
 
-			if ((top.Key >= mDetails.GetTotalIterations() +  1 || failed_repeater_bodge) ||
-				((top.Value).count > 10 && (top.Key > mDetails.GetTotalIterations() - 100 || (top.Key == top3.Key && top.Value == top3.Value))))
+			if ((top.getKey() >= mDetails.GetTotalIterations() +  1 || failed_repeater_bodge) ||
+				((top.getValue()).count > 10 && (top.getKey() > mDetails.GetTotalIterations()-100 || top==top3)))
 			{
 				
-				if ((top.Value).count==1 ||failed_repeater_bodge && (p)*(p)+ (q)*(q)<range*range*0.5f/100.0f)
+				if ((top.getValue()).count==1 ||failed_repeater_bodge && (p)*(p)+ (q)*(q)<range*range*0.5f/100.0f)
 				{
 					initial = -1;
 				}
@@ -313,7 +315,7 @@ KeyValuePair<int,FBRPEntry> mMax_count;
 					initial = mDetails.GetTotalIterations();
 					int test=mDetails.CalculateIterations(mDetails, p-mDetails.GetScreenOffsetX(), q-mDetails.GetScreenOffsetY() );
 					//if (test>initial || !test)													// pre change 20/10/2010
-					if ((test>initial || test==0) && ((top.Value).count<=10 || test == - top.Key))	// change 20/10/2010
+					if ((test>initial || test==0) && ((top.getValue()).count<=10 || test == - top.getKey()))	// change 20/10/2010
 						mDetails.ReFillInCubic(mDetails.GetIterationLimit(), mDetails.GetActualWidth(), mDetails.GetSizeExtraExponent(), p, q );
 					else
 						initial=-1;
@@ -323,14 +325,14 @@ KeyValuePair<int,FBRPEntry> mMax_count;
 				if ((initial >= mDetails.GetTotalIterations()) || initial == -1)
 				{
 					//average didn't work - try a specific point
-					p = (top.Value).non_averaged_p;
-					q = (top.Value).non_averaged_q;				
+					p = (top.getValue()).non_averaged_p;
+					q = (top.getValue()).non_averaged_q;				
 					mDetails.ReFillInCubicWithRepeaterCheck(mDetails.GetIterationLimit(), mDetails.GetActualWidth(), mDetails.GetSizeExtraExponent(), p, q );
 				}
 				failed_repeater_bodge=false;
 				clear = true;
 				
-				if (((top.Value).count<=10 && mNum_above_accuracy_limit<=10) && !skip_zoom_bodge && mDetails.GetTotalIterations()>=initial)
+				if (((top.getValue()).count<=10 && mNum_above_accuracy_limit<=10) && !skip_zoom_bodge && mDetails.GetTotalIterations()>=initial)
 				{
 					//zoom in on point with max iterations
 				}
@@ -357,16 +359,16 @@ KeyValuePair<int,FBRPEntry> mMax_count;
 			else
 			{
 				int test;
-				if ((Math.Abs((top.Value).non_averaged_p-mDetails.GetScreenOffsetX()) > range/8 ||
-						Math.Abs((top.Value).non_averaged_q-mDetails.GetScreenOffsetY()) > range/8) &&
-						(top.Value).count >= 3 /*&&
+				if ((Math.abs((top.getValue()).non_averaged_p-mDetails.GetScreenOffsetX()) > range/8 ||
+						Math.abs((top.getValue()).non_averaged_q-mDetails.GetScreenOffsetY()) > range/8) &&
+						(top.getValue()).count >= 3 /*&&
 						!mDetails->GetIsFailedRepeater()*/)
 				{
 					test = mDetails.CalculateIterations(mDetails, 1/1000.0f, 1/1000.0f );
-					if (-top.Key > test+500)
+					if (-top.getKey() > test+500)
 					{
-						p = (top.Value).non_averaged_p;
-						q = (top.Value).non_averaged_q;				
+						p = (top.getValue()).non_averaged_p;
+						q = (top.getValue()).non_averaged_q;				
 						mDetails.ReFillInCubicWithRepeaterCheck(mDetails.GetIterationLimit(), mDetails.GetActualWidth(), mDetails.GetSizeExtraExponent(), p, q );
 					}
 				}
@@ -380,7 +382,7 @@ KeyValuePair<int,FBRPEntry> mMax_count;
 
 			// Iteratively reduce the test area
 
-			if ((top.Value).count<=10 && mNum_above_accuracy_limit<=10 && !skip_zoom_bodge)
+			if ((top.getValue()).count<=10 && mNum_above_accuracy_limit<=10 && !skip_zoom_bodge)
 			{
 				if (!(range > 1/50.0f && mDetails.GetTotalIterations() < mDetails.GetIterationLimit()-100) && !failed_repeater_bodge)
 					break;
@@ -392,7 +394,7 @@ KeyValuePair<int,FBRPEntry> mMax_count;
 				if (mDetails.GetTotalIterations() >= mDetails.GetIterationLimit()-100 && !failed_repeater_bodge)
 					break;
 				
-				if ((top.Value).count>40)
+				if ((top.getValue()).count>40)
 				{
 					skip_zoom_bodge = true;
 				}
@@ -407,10 +409,10 @@ KeyValuePair<int,FBRPEntry> mMax_count;
 				clear=false;
 				Clear();
 			}
-			if (Math.Abs(old_max_p-p)*2>range)
-				range = Math.Abs(old_max_p-p)*2.1f;
-			if (Math.Abs(old_max_q-q)*2>range)
-				range = Math.Abs(old_max_q-q)*2.1f;
+			if (Math.abs(old_max_p-p)*2>range)
+				range = Math.abs(old_max_p-p)*2.1f;
+			if (Math.abs(old_max_q-q)*2>range)
+				range = Math.abs(old_max_q-q)*2.1f;
 			
 			old_max_p = p;
 			old_max_q = q;
@@ -437,7 +439,7 @@ KeyValuePair<int,FBRPEntry> mMax_count;
 				//Makes sure the point is representitive
 				p = rep_x;
 				q = rep_y;
-				range = (float)Math.Sqrt((rep_x-fail_x)*(rep_x-fail_x)+(rep_y-fail_y)*(rep_y-fail_y));
+				range = (float)Math.sqrt((rep_x-fail_x)*(rep_x-fail_x)+(rep_y-fail_y)*(rep_y-fail_y));
 				
 				int steps = 10;
 
@@ -447,18 +449,19 @@ KeyValuePair<int,FBRPEntry> mMax_count;
 					Clear();
 					DoAPass( p,q,range, range, steps );
 					
-					var set = mMap.GetEnumerator();
-					set.MoveNext();
-					top = set.Current;
-					top3 = mMax_count;					
+					Set<Map.Entry<Integer,FBRPEntry>> set = mMap.entrySet();
+					Iterator<Map.Entry<Integer,FBRPEntry>> itr = set.iterator();
+					top = itr.next();
+					top3 = mMax_count;
+					set = null;
 					
-					if ((top3.Value).count > 5*(top.Value).count)
+					if ((top3.getValue()).count > 5*(top.getValue()).count)
 						top = top3;
 				
-					p = (top.Value).non_averaged_p;
-					q = (top.Value).non_averaged_q;
+					p = (top.getValue()).non_averaged_p;
+					q = (top.getValue()).non_averaged_q;
 					
-					if ((top.Value).count>=4)
+					if ((top.getValue()).count>=4)
 					{
 						test = normal_details.CalculateIterations(normal_details,p-normal_details.GetScreenOffsetX(), q-normal_details.GetScreenOffsetY() ); 
 						if (test != repeater_interations)
@@ -482,28 +485,29 @@ KeyValuePair<int,FBRPEntry> mMax_count;
 					p=fail_x;
 					q=fail_y;
 					
-					range = (float)Math.Sqrt(repeater_fail_distance)*2/1.5f;
+					range = (float)Math.sqrt(repeater_fail_distance)*2/1.5f;
 					int steps = 10;
 
 					for (pass=0; pass<4; pass++)
 					{
 						Clear();
 						DoAPass( p,q,range, range, steps );
-
-						var set = mMap.GetEnumerator();
-						set.MoveNext();
-						top = set.Current;
-						set.MoveNext();
-						top2 = set.Current;
+						
+						Set<Map.Entry<Integer,FBRPEntry>> set = mMap.entrySet();
+						Iterator<Map.Entry<Integer,FBRPEntry>> itr = set.iterator();
+						top = itr.next();
+						top2 = itr.next();
 						top3 = mMax_count;
+						set = null;
+						
 
-						if ((top3.Value).count >= 4*(top.Value).count && (mMax_count.Value).count>=mMax_count_depth*0.67777)
+						if ((top3.getValue()).count >= 4*(top.getValue()).count && (mMax_count.getValue()).count>=mMax_count_depth*0.67777)
 							top = top3;
 						
-						p = (top.Value).non_averaged_p;
-						q = (top.Value).non_averaged_q;
+						p = (top.getValue()).non_averaged_p;
+						q = (top.getValue()).non_averaged_q;
 						
-						if ((top.Value).count>=10)
+						if ((top.getValue()).count>=10)
 						{						
 							mDetails.ReFillInCubic(mDetails.GetIterationLimit(), mDetails.GetActualWidth(), mDetails.GetSizeExtraExponent(), p,q );
 						}
@@ -530,7 +534,7 @@ KeyValuePair<int,FBRPEntry> mMax_count;
 		
 		if (centre_check_details!=null)
 		{
-			if (Math.Abs(p)>0.3f || Math.Abs(q)>0.3f)
+			if (Math.abs(p)>0.3f || Math.abs(q)>0.3f)
 			{				
 				p=0; q=0;
 				range = 0.6f;
@@ -543,20 +547,22 @@ KeyValuePair<int,FBRPEntry> mMax_count;
 					Clear();
 					DoAPass(p,q, range,range,10);
 					
-					var set = mMap.GetEnumerator();
-					set.MoveNext();
-					top = set.Current;
-					if (set.MoveNext())
-						top2 = set.Current;
+					Set<Map.Entry<Integer,FBRPEntry>> set = mMap.entrySet();
+					Iterator<Map.Entry<Integer,FBRPEntry>> itr = set.iterator();
+					top = itr.next();
+					if (itr.hasNext())
+						top2 = itr.next();
 					else
 						top2 = top;
 					
-					top3 = mMax_count;					
+					top3 = mMax_count;
+					set = null;
 					
-					if ((top.Value).count==1 && (top2.Value).count==1 &&
-						(Math.Abs( (top.Value).total_p - (top2.Value).total_p ) > range/9 * 1.5f ||
-						 Math.Abs( (top.Value).total_q - (top2.Value).total_q ) > range/9 * 1.5f ) &&
-						(top3.Value.count<10 || - top3.Key < centre_check_details.GetTotalIterations()))
+					
+					if ((top.getValue()).count==1 && (top2.getValue()).count==1 &&
+						(Math.abs( (top.getValue()).total_p - (top2.getValue()).total_p ) > range/9 * 1.5f ||
+						 Math.abs( (top.getValue()).total_q - (top2.getValue()).total_q ) > range/9 * 1.5f ) &&
+						(top3.getValue().count<10 || - top3.getKey() < centre_check_details.GetTotalIterations()))
 					{
 						int x,y,max_i=-1, max_x=0,max_y=0;
 						float repeater_x = (initial_p - mP_start)/mP_step;
@@ -565,8 +571,8 @@ KeyValuePair<int,FBRPEntry> mMax_count;
 						for (y=0; y<mSteps_p-1; y++)
 							for (x=0; x<mSteps_q-1; x++)
 							{
-								i = mArray[y,x]+mArray[y,x+1]+mArray[y+1,x+1]+mArray[y+1,x];
-								i -= Math.Max( Math.Max(mArray[y,x],mArray[y,x+1]), Math.Max(mArray[y+1,x+1],mArray[y+1,x]) );
+								i = mArray[y][x]+mArray[y][x+1]+mArray[y+1][x+1]+mArray[y+1][x];
+								i -= Math.max( Math.max(mArray[y][x],mArray[y][x+1]), Math.max(mArray[y+1][x+1],mArray[y+1][x]) );
 								
 								if (repeater_x >=x && repeater_x <= x+1 && repeater_y >= y && repeater_y <= y+1)
 									i-=1000;
@@ -578,18 +584,18 @@ KeyValuePair<int,FBRPEntry> mMax_count;
 								}
 							}
 						
-						int min_i = mMap.Keys.Max();
-						p = (mP_start + mP_step * (max_x+0)) * (mArray[max_y,max_x]-min_i);
-						q = (mQ_start + mQ_step * (max_y+0)) * (mArray[max_y,max_x]-min_i);
-						p += (mP_start + mP_step * (max_x+1)) * (mArray[max_y,max_x+1]-min_i);
-						q += (mQ_start + mQ_step * (max_y+0)) * (mArray[max_y,max_x+1]-min_i);
-						p += (mP_start + mP_step * (max_x+1)) * (mArray[max_y+1,max_x+1]-min_i);
-						q += (mQ_start + mQ_step * (max_y+1)) * (mArray[max_y+1,max_x+1]-min_i);
-						p += (mP_start + mP_step * (max_x+0)) * (mArray[max_y+1,max_x+0]-min_i);
-						q += (mQ_start + mQ_step * (max_y+1)) * (mArray[max_y+1,max_x+0]-min_i);
+						int min_i = mMap.lastKey();
+						p = (mP_start + mP_step * (max_x+0)) * (mArray[max_y][max_x]-min_i);
+						q = (mQ_start + mQ_step * (max_y+0)) * (mArray[max_y][max_x]-min_i);
+						p += (mP_start + mP_step * (max_x+1)) * (mArray[max_y][max_x+1]-min_i);
+						q += (mQ_start + mQ_step * (max_y+0)) * (mArray[max_y][max_x+1]-min_i);
+						p += (mP_start + mP_step * (max_x+1)) * (mArray[max_y+1][max_x+1]-min_i);
+						q += (mQ_start + mQ_step * (max_y+1)) * (mArray[max_y+1][max_x+1]-min_i);
+						p += (mP_start + mP_step * (max_x+0)) * (mArray[max_y+1][max_x+0]-min_i);
+						q += (mQ_start + mQ_step * (max_y+1)) * (mArray[max_y+1][max_x+0]-min_i);
 						
-						p/=(mArray[max_y,max_x]+mArray[max_y,max_x+1]+mArray[max_y+1,max_x+1]+mArray[max_y+1,max_x]-4*min_i);
-						q/=(mArray[max_y,max_x]+mArray[max_y,max_x+1]+mArray[max_y+1,max_x+1]+mArray[max_y+1,max_x]-4*min_i);
+						p/=(mArray[max_y][max_x]+mArray[max_y][max_x+1]+mArray[max_y+1][max_x+1]+mArray[max_y+1][max_x]-4*min_i);
+						q/=(mArray[max_y][max_x]+mArray[max_y][max_x+1]+mArray[max_y+1][max_x+1]+mArray[max_y+1][max_x]-4*min_i);
 						//p = mP_start + mP_step * (max_x+0.5);
 						//q = mQ_start + mQ_step * (max_y+0.5);
 						range *= 0.5f;
@@ -597,7 +603,7 @@ KeyValuePair<int,FBRPEntry> mMax_count;
 						if (range <= 1/50.0f)
 							break;
 						
-						//if (pass==0 && (Math.Abs(p)>0.3 || Math.Abs(q)>0.3) && !mDetails->GetIsFailedRepeater())
+						//if (pass==0 && (Math.abs(p)>0.3 || Math.abs(q)>0.3) && !mDetails->GetIsFailedRepeater())
 						//{
 						//	centre_check_details = new CDetails(mDetails);
 						//}
@@ -616,25 +622,25 @@ KeyValuePair<int,FBRPEntry> mMax_count;
 						continue;
 					}
 					
-					if ((top2.Value).count > (top.Value).count*5 ||
-						((top.Value).count ==1 && failed_repeater_bodge && (top2.Value).count > (top.Value).count) ||
-						((top2.Value).count >= 3*(top.Value).count && (top3.Value).count >= 3*(top.Value).count))
+					if ((top2.getValue()).count > (top.getValue()).count*5 ||
+						((top.getValue()).count ==1 && failed_repeater_bodge && (top2.getValue()).count > (top.getValue()).count) ||
+						((top2.getValue()).count >= 3*(top.getValue()).count && (top3.getValue()).count >= 3*(top.getValue()).count))
 					{
 						top = top2;
 						
 					}
-					else if ((top3.Value).count > (top2.Value).count*5 && - top3.Key > centre_check_details.GetTotalIterations() && (mMax_count.Value).count>=mMax_count_depth*0.67777f)
+					else if ((top3.getValue()).count > (top2.getValue()).count*5 && - top3.getKey() > centre_check_details.GetTotalIterations() && (mMax_count.getValue()).count>=mMax_count_depth*0.67777f)
 					{
 						top = top3;
 					}
 					
-					p = (top.Value).total_p/(top.Value).count;
-					q = (top.Value).total_q/(top.Value).count;
+					p = (top.getValue()).total_p/(top.getValue()).count;
+					q = (top.getValue()).total_q/(top.getValue()).count;
 					
-					if ((- top.Key >= centre_check_details.GetTotalIterations() +  1 ||
-						((top.Value).count > 10 && - top.Key > centre_check_details.GetTotalIterations()-100)))
+					if ((- top.getKey() >= centre_check_details.GetTotalIterations() +  1 ||
+						((top.getValue()).count > 10 && - top.getKey() > centre_check_details.GetTotalIterations()-100)))
 					{
-						if ((top.Value).count >= 5 && mDetails != centre_check_details)
+						if ((top.getValue()).count >= 5 && mDetails != centre_check_details)
 						{
 							mDetails = centre_check_details;
 							skip_zoom_bodge = true;
@@ -642,7 +648,7 @@ KeyValuePair<int,FBRPEntry> mMax_count;
 						
 						if (mDetails == centre_check_details)
 						{
-							if ((top.Value).count==1)
+							if ((top.getValue()).count==1)
 							{
 								initial = -1;
 							}
@@ -662,8 +668,8 @@ KeyValuePair<int,FBRPEntry> mMax_count;
 							if ((initial >= mDetails.GetTotalIterations()) || initial == -1)
 							{
 								//average didn't work - try a specific point
-								p = (top.Value).non_averaged_p;
-								q = (top.Value).non_averaged_q;				
+								p = (top.getValue()).non_averaged_p;
+								q = (top.getValue()).non_averaged_q;				
 								{
 									mDetails.ReFillInCubicWithRepeaterCheck(mDetails.GetIterationLimit(), mDetails.GetActualWidth(), mDetails.GetSizeExtraExponent(), p, q );
 								}
@@ -682,7 +688,7 @@ KeyValuePair<int,FBRPEntry> mMax_count;
 					if (mNum_above_accuracy_limit<10 && !skip_zoom_bodge)
 						range /= 3.0f;			
 					else
-						range *= 0.95f;
+						range *= 0.95;
 			
 				}
 			}
@@ -728,17 +734,17 @@ KeyValuePair<int,FBRPEntry> mMax_count;
 				if (i==0)
 					i=0x7fffffff;
 				
-				mArray[y,x] = i;
+				mArray[y][x] = i;
 				
 				if (i>mDetails.GetTotalIterations()+200)
 					mNum_above_accuracy_limit++;
-
-				//entry = mMap[-i];
-				if (!mMap.TryGetValue(-i, out entry))
+				
+				entry = mMap.get(-i);
+				if (entry==null)
 				{
 					entry = new FBRPEntry();//&mMap[i];
-					mMap.Add(-i, entry);
-				}				
+					mMap.put(-i, entry);
+				}
 				entry.count++;
 				entry.total_p+=p;
 				entry.total_q+=q;
@@ -747,7 +753,8 @@ KeyValuePair<int,FBRPEntry> mMax_count;
 				{
 					entry.non_averaged_p = p;
 					entry.non_averaged_q = q;
-					entry.d = d;					
+					entry.d = d;
+					
 				}
 				
 			}
@@ -758,22 +765,22 @@ KeyValuePair<int,FBRPEntry> mMax_count;
 		//Now find max count
 		int max_count=0;
 		int depth=0;
-		/*		for (itr = mMap.rbegin(),depth=0; itr != mMap.rend(); depth+=itr->second.count,itr++)
-				{
-					if (itr->second.count > max_count)
-					{
-						mMax_count = itr;
-						max_count = itr->second.count;
-						mMax_count_depth = depth;
-					}
-				}
-		*/
-		var itr= mMap.GetEnumerator();
-		
-		while (itr.MoveNext())
+/*		for (itr = mMap.rbegin(),depth=0; itr != mMap.rend(); depth+=itr->second.count,itr++)
 		{
-			var me = itr.Current;
-			FBRPEntry fbrpent = me.Value;
+			if (itr->second.count > max_count)
+			{
+				mMax_count = itr;
+				max_count = itr->second.count;
+				mMax_count_depth = depth;
+			}
+		}
+*/
+		Set<Map.Entry<Integer,FBRPEntry>> set = mMap.entrySet();
+		Iterator<Map.Entry<Integer,FBRPEntry>> itr = set.iterator();
+		while (itr.hasNext())
+		{
+			Map.Entry<Integer,FBRPEntry> me = itr.next();
+			FBRPEntry fbrpent =  me.getValue();
 			if (fbrpent.count>max_count)
 			{
 				mMax_count = me;
@@ -793,9 +800,9 @@ KeyValuePair<int,FBRPEntry> mMax_count;
 
 	void Clear()
 	{
-		mMap = new SortedDictionary<int,FBRPEntry>();
+		mMap = new TreeMap<Integer,FBRPEntry>();
 					   
-		mNum_above_accuracy_limit = 0;
+		mNum_above_accuracy_limit=0;
 	}	
 	
 	

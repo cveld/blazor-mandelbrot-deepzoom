@@ -40,7 +40,15 @@ namespace Mandelbrot
 		private readonly IBigDecimalFactory bigDecimalFactory;
 		private readonly IMathContextFactory mathContextFactory;
 
-		public IndexBuffer2D DoCalculation(SuperSampleType aSuper_sample)
+		public IndexBuffer2D DoCalculation(SuperSampleType superSampleType)
+		{
+			var mSize = bigDecimalFactory.FromDouble(3.0);
+			var mPos = bigDecimalFactory.FromDouble(-0.75, mathContextFactory.BigDecimal128());
+			var mPosi = bigDecimalFactory.FromDouble(0, mathContextFactory.BigDecimal128());
+			return DoCalculation(superSampleType, mSize, mPos, mPosi);
+		}
+
+		public IndexBuffer2D DoCalculation(SuperSampleType aSuper_sample, IBigDecimal mSize, IBigDecimal mPos, IBigDecimal mPosi)
 		{
 			int mResolution_x = Width;
 			int mResolution_y = Height;
@@ -52,9 +60,6 @@ namespace Mandelbrot
 			//mGui.SetCalculationTime(-1);
 			//coords = mGui.GetCoords();
 			mMax_iterations = 1024;
-			mSize = bigDecimalFactory.FromDouble(3.0);
-			mPos = bigDecimalFactory.FromDouble(-0.75, mathContextFactory.BigDecimal128()); 
-			mPosi = bigDecimalFactory.FromDouble(0, mathContextFactory.BigDecimal128());
 			int scale = mSize.JavaScale();
 			int precision = mSize.JavaPrecision();
 			int expo = 0;

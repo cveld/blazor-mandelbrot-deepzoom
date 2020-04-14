@@ -86,8 +86,7 @@ namespace BigDecimalsDParker
                 dec = s.Length;
             }
             this.Value = BigInteger.Parse(s);
-            this.Precision = s.Length - dec;
-            
+            this.Precision = s.Length - dec;            
         }
 
         public BigDecimal(double d, IMathContext mc) : this(d.ToString(System.Globalization.CultureInfo.InvariantCulture), mc)
@@ -103,11 +102,11 @@ namespace BigDecimalsDParker
         public void HandleE(string s)
         {
             var idx = s.IndexOf('e');
-            var potentialdot = s.Substring(idx - 1);
+            var potentialdot = s.Substring(0, idx);
             var dotidx = s.IndexOf('.');
             var number = dotidx != -1 ? potentialdot.Remove(dotidx, 1) : potentialdot;            
             
-            var bi = BigInteger.Parse(s.Substring(0, idx));
+            var bi = BigInteger.Parse(number);
             var precision = dotidx != -1 ? idx - dotidx : 0;
             if (s[idx+1] == '-')
             {
@@ -534,6 +533,44 @@ namespace BigDecimalsDParker
         {
             return new BigDecimal(Value, Precision + 1);
         }
-        
+
+        public IBigDecimal SetJavaScale(int scale, BigDecimalRoundingEnum bigDecimalRoundingEnum)
+        {
+            // .NET does not have a rounding parameter for dividing BigInteger values
+            var currentScale = Precision;
+            var compared = scale.CompareTo(currentScale);
+            switch (compared)
+            {
+                case 0:
+                    return this;
+                case 1:
+                    return new BigDecimal(Value * BigInteger.Pow(10, scale - currentScale), scale);
+                case -1:
+                    return new BigDecimal(Value / BigInteger.Pow(10, currentScale - scale), scale);
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(compared));
+            }
+        }
+
+        public IBigDecimal StripTrailingZeros()
+        {
+            var result = Value;
+            var newscale = Precision;
+            while (true)
+            {
+                if (result == 0)
+                {
+                    break;
+                }
+                var newresult = BigInteger.DivRem(result, 10, out var remainder);
+                if (remainder != 0)
+                {
+                    break;
+                }
+                result = newresult;
+                newscale--;
+            }
+            return new BigDecimal(result, newscale);
+        }
     } // class
 } // namespace

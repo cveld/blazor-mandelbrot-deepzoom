@@ -14,6 +14,7 @@
     <ProjectReference Include="..\BigDecimalContracts\BigDecimalContracts.csproj" />
     <ProjectReference Include="..\BigDecimalDParker\BigDecimalDParker.csproj" />
     <ProjectReference Include="..\BigDecimalIKVM\BigDecimalIKVM.csproj" />
+    <ProjectReference Include="..\BlazorMandelbrotDeepzoom\Client\BlazorMandelbrotDeepzoom.Client.csproj" />
     <ProjectReference Include="..\Mandelbrot\Mandelbrot.csproj" />
   </ItemGroup>
 
