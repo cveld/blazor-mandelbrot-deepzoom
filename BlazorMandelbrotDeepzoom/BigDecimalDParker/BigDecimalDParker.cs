@@ -107,7 +107,7 @@ namespace BigDecimalsDParker
             var number = dotidx != -1 ? potentialdot.Remove(dotidx, 1) : potentialdot;            
             
             var bi = BigInteger.Parse(number);
-            var precision = dotidx != -1 ? idx - dotidx : 0;
+            var precision = dotidx != -1 ? idx - dotidx - 1 : 0;
             if (s[idx+1] == '-')
             {
                 // 1E1 -> 10 -> 10 precision 0

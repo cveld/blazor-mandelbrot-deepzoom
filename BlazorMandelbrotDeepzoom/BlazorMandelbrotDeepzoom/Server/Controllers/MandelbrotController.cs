@@ -15,7 +15,7 @@ namespace BlazorMandelbrotDeepzoom.Server.Controllers
         int width = 400;
         int height = 400;
         [HttpGet]
-        public byte[] Get(string pos, string posi, string size)
+        public byte[] Get(string pos, string posi, string size, int iterationlimit)
         {
             var bigDecimalFactory = new BigDecimalFactory();
             var mathContextFactory = new MathContextFactory();
@@ -24,7 +24,7 @@ namespace BlazorMandelbrotDeepzoom.Server.Controllers
             var mpos = bigDecimalFactory.FromString(pos);
             var mposi = bigDecimalFactory.FromString(posi);
             var msize = bigDecimalFactory.FromString(size);
-            var result = mandelbrot.DoCalculation(SuperSampleType.SUPER_SAMPLE_NONE, msize, mpos, mposi);
+            var result = mandelbrot.DoCalculation(SuperSampleType.SUPER_SAMPLE_NONE, msize, mpos, mposi, iterationlimit);
             var imageBuilder = new ImageBuilder();
             var palette = new SFTPaletteOld();            
             var image = result.MakeTexture(imageBuilder, palette, SuperSampleType.SUPER_SAMPLE_NONE) as MandelbrotImage;

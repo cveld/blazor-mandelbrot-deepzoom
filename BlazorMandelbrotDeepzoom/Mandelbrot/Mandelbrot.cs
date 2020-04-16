@@ -15,26 +15,11 @@ namespace Mandelbrot
 			this.bigDecimalFactory = bigDecimalFactory;
 			this.mathContextFactory = mathContextFactory;
 			generated = new uint[xw * yw * 4];
-        }
-        public uint[] Generate(IBigDecimal xp, IBigDecimal yp, IBigDecimal scale)
-        {
-            var idx = 0;
-            var random = new Random();
-            for (int y = 0; y < Height; y++)
-                for (int x = 0; x < Width; x++) {
-                    generated[idx] = (uint)random.Next(255);
-                    generated[idx + 1] = (uint)random.Next(255);
-                    generated[idx + 2] = (uint)random.Next(255);
-                    generated[idx + 3] = (uint)random.Next(255);
-                    idx += 4;
-                }
-
-            return generated;
-        }
+        }        
 
 		IBigDecimal mSize;
 		IBigDecimal mPos, mPosi;
-		int mMax_iterations;
+		//int mMax_iterations;
 		CalculationManager mCalculation;
 		IndexBuffer2D buffer;
 		private readonly IBigDecimalFactory bigDecimalFactory;
@@ -45,10 +30,16 @@ namespace Mandelbrot
 			var mSize = bigDecimalFactory.FromDouble(3.0);
 			var mPos = bigDecimalFactory.FromDouble(-0.75, mathContextFactory.BigDecimal128());
 			var mPosi = bigDecimalFactory.FromDouble(0, mathContextFactory.BigDecimal128());
-			return DoCalculation(superSampleType, mSize, mPos, mPosi);
+			var mMax_iterations = 1024;
+			return DoCalculation(superSampleType, mSize, mPos, mPosi, mMax_iterations);
 		}
 
-		public IndexBuffer2D DoCalculation(SuperSampleType aSuper_sample, IBigDecimal mSize, IBigDecimal mPos, IBigDecimal mPosi)
+		public IndexBuffer2D DoCalculation(SuperSampleType aSuper_sample, string mSize, string mPos, string mPosi, int mMax_iterations)
+		{
+			return DoCalculation(aSuper_sample, bigDecimalFactory.FromString(mSize), bigDecimalFactory.FromString(mPos), bigDecimalFactory.FromString(mPosi), mMax_iterations);
+		}
+
+			public IndexBuffer2D DoCalculation(SuperSampleType aSuper_sample, IBigDecimal mSize, IBigDecimal mPos, IBigDecimal mPosi, int mMax_iterations)
 		{
 			int mResolution_x = Width;
 			int mResolution_y = Height;
@@ -58,8 +49,7 @@ namespace Mandelbrot
 			//mGui.StartProcessing();
 			//mStart_time = System.currentTimeMillis();
 			//mGui.SetCalculationTime(-1);
-			//coords = mGui.GetCoords();
-			mMax_iterations = 1024;
+			//coords = mGui.GetCoords();			
 			int scale = mSize.JavaScale();
 			int precision = mSize.JavaPrecision();
 			int expo = 0;

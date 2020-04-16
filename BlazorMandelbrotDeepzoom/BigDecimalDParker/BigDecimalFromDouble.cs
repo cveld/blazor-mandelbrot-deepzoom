@@ -59,7 +59,7 @@ namespace Mandelbrot.BigDecimalsDParker
             // intCompact = compactValFor(b);
             Value = b; // (intCompact != INFLATED) ? null : b;
 
-            // c# Precision gets assigned the java scale value (number of digit behind the point)
+            // c# Precision gets assigned the java scale value (number of digits behind the point)
             Precision = scale;
         } // method
     }
