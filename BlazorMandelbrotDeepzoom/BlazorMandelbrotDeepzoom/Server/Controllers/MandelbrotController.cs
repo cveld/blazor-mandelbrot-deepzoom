@@ -15,7 +15,7 @@ namespace BlazorMandelbrotDeepzoom.Server.Controllers
         int width = 400;
         int height = 400;
         [HttpGet]
-        public byte[] Get(string pos, string posi, string size, int iterationlimit)
+        public MandelbrotImageDTO Get(string pos, string posi, string size, int iterationlimit)
         {
             var bigDecimalFactory = new BigDecimalFactory();
             var mathContextFactory = new MathContextFactory();
@@ -28,7 +28,11 @@ namespace BlazorMandelbrotDeepzoom.Server.Controllers
             var imageBuilder = new ImageBuilder();
             var palette = new SFTPaletteOld();            
             var image = result.MakeTexture(imageBuilder, palette, SuperSampleType.SUPER_SAMPLE_NONE) as MandelbrotImage;
-            return image.image;
+            return new MandelbrotImageDTO
+            {
+                Image = image.image,
+                NewIterationLimit = mandelbrot.GetNewIterationLimit(iterationlimit)
+            };
         }
     }
 }

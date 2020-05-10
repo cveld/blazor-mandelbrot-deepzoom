@@ -17,7 +17,7 @@ namespace MandelbrotTest
         static void Main(string[] args)
         {
             DParkerImplementation.Run();
-            IKVMImplementation.Run();
+            //IKVMImplementation.Run();
         }       
     }
 }

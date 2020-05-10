@@ -25,6 +25,15 @@ namespace Mandelbrot
 		private readonly IBigDecimalFactory bigDecimalFactory;
 		private readonly IMathContextFactory mathContextFactory;
 
+		public int GetNewIterationLimit(int iterationlimit)
+        {
+			if (mCalculation == null)
+            {
+				return iterationlimit;
+            }
+			return Math.Max(iterationlimit, mCalculation.GetNewLimit());
+		}
+
 		public IndexBuffer2D DoCalculation(SuperSampleType superSampleType)
 		{
 			var mSize = bigDecimalFactory.FromDouble(3.0);
@@ -39,7 +48,7 @@ namespace Mandelbrot
 			return DoCalculation(aSuper_sample, bigDecimalFactory.FromString(mSize), bigDecimalFactory.FromString(mPos), bigDecimalFactory.FromString(mPosi), mMax_iterations);
 		}
 
-			public IndexBuffer2D DoCalculation(SuperSampleType aSuper_sample, IBigDecimal mSize, IBigDecimal mPos, IBigDecimal mPosi, int mMax_iterations)
+		public IndexBuffer2D DoCalculation(SuperSampleType aSuper_sample, IBigDecimal mSize, IBigDecimal mPos, IBigDecimal mPosi, int mMax_iterations)
 		{
 			int mResolution_x = Width;
 			int mResolution_y = Height;

@@ -18,6 +18,28 @@ export class MandelbrotCanvas {
     drag = false;
     dotnetobjref;
 
+    /**
+     * Fetches a new mandelbrot image including a new iteration limit based on captured statistics.
+     * Returns the new iteration limit
+     * @param mPos
+     * the real part of the position
+     * @param mPosi
+     * the imaginary part of the position
+     * @param size
+     * the mathematical size of the area
+     * @param iterationlimit
+     * the iteration limit of the Mandelbrot iteration loop
+     */    
+    async fetchAndDraw(mPos: string, mPosi: string, mSize: string, iterationlimit: number): Promise<void> {        
+        const result = await fetch(`Mandelbrot?pos=${mPos}&posi=${mPosi}&size=${mSize}&iterationlimit=${iterationlimit}`);
+        const payload: {
+            image: string;
+            newIterationLimit: number;
+        } = await result.json();
+        this.drawPixelsString(payload.image);        
+        this.dotnetobjref.invokeMethod('NewIterationLimit', payload.newIterationLimit);        
+    }
+
     drawPixelsString(pixelsbase64: string): void {
         //const pixels = new Uint8Array(atob(pixelsbase64).split("").map(function (c) {
         //    return c.charCodeAt(0);

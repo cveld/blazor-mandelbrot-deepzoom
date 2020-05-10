@@ -59,8 +59,18 @@ namespace MandelbrotTest
             outputStream.Flush();
 
     */
+            var set1 = new
+            {
+                horizontalSize = "1.01286E-43",
+                real = "-1.2639964051589078181291847881077290756450510524065464",
+                imaginary = "0.3832836576031669068736837663207157738287174647222295",
+                iterationLimit = 800 //1280
+            };
+            result = mandelbrot.DoCalculation(SuperSampleType.SUPER_SAMPLE_NONE, set1.horizontalSize, set1.real, set1.imaginary, set1.iterationLimit);
+            mandelbrot.GetNewIterationLimit(1024);
 
             result = mandelbrot.DoCalculation(SuperSampleType.SUPER_SAMPLE_NONE, "5.34744E-27", "-1.26399640515890781812918478966086061", "0.38328365760316690687368376596728907", 1792);
+            
             image = result.MakeTexture(new ImageBuilder(), palette, SuperSampleType.SUPER_SAMPLE_NONE) as ImageWrapper;
             outputStream = new FileStream(@$"C:\Temp\{outfile}3.png", FileMode.Create);
             image.image.SaveAsPng(outputStream);
