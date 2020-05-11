@@ -336,13 +336,11 @@ public class Details : Approximation {
 	{
 		IBigDecimal p,q,dte;
 		
-		// p = x.Multiply(x, mMath_context);
-		p = x.Mul(x);
-		// q = y.multiply(y, mMath_context);
-		q = y.Mul(y);
-		// dte = four.subtract(p, mMath_context);
-		dte = four.Sub(p);
-		dte = dte.Sub(q);
+		p = x.Mul(x, mMath_context);
+		q = y.Mul(y, mMath_context);
+		
+		dte = four.Sub(p, mMath_context);		
+		dte = dte.Sub(q, mMath_context);
 		double delta = dte.DoubleValue();
 		double dist = delta/4 + delta*delta/32;
 		
@@ -405,14 +403,14 @@ public class Details : Approximation {
 		IBigDecimal x,y,p,q,c,ci;
 		int count = 1;
 		
-		c = bigDecimalFactory.FromDouble( aScreen_offset_x * mActual_width );
-		ci = bigDecimalFactory.FromDouble( aScreen_offset_y * mActual_width );
+		c = bigDecimalFactory.FromDouble( aScreen_offset_x * mActual_width, mMath_context);
+		ci = bigDecimalFactory.FromDouble( aScreen_offset_y * mActual_width, mMath_context);
 		
 		if (aSize_extra_exponent!=0)
 		{
 			//double factor = Math.Pow(10.0, (double)-aSize_extra_exponent);
-			//c = c * new BigDecimal(factor.ToString());
-			//ci = ci * new BigDecimal(factor.ToString());
+			//c = c * new BigDecimal(factor.ToString(), mMath_context);
+			//ci = ci * new BigDecimal(factor.ToString(), mMath_context);
 			c = c.MovePointLeft((int)aSize_extra_exponent);
 			ci = ci.MovePointLeft((int)aSize_extra_exponent);
 		}
@@ -545,15 +543,15 @@ public class Details : Approximation {
 
 				//Now do next Mandelbrot calculation
 				//This does an unnecessary multiply
-				p = x.Mul(x);
-				q = y.Mul(y);
+				p = x.Mul(x, mMath_context);
+				q = y.Mul(y, mMath_context);
 
-				p = p.Sub(q);
-				p = p.Add(c);
+				p = p.Sub(q, mMath_context);
+				p = p.Add(c, mMath_context);
 
-				q = x.Mul(y);
-				q = q.Add(q);
-				q = q.Add(ci);
+				q = x.Mul(y, mMath_context);
+				q = q.Add(q, mMath_context);
+				q = q.Add(ci, mMath_context);
 				
 				x=p;
 				y=q;
@@ -671,7 +669,7 @@ public class Details : Approximation {
 		do
 		{
 			i++;
-			//Now do next mand calculation
+			//Now do next Mandelbrot calculation
 			p = x.Mul(x, mMath_context);
 			q = y.Mul(y, mMath_context);
 

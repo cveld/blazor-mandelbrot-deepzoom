@@ -14,7 +14,6 @@ using System.Globalization;
 using System.Net.Http;
 using BlazorMandelbrotDeepzoom.Client.Models;
 using BigDecimalContracts;
-using BigDecimalsDParker;
 
 namespace BlazorMandelbrotDeepzoom.Client.Pages
 {
@@ -30,6 +29,7 @@ namespace BlazorMandelbrotDeepzoom.Client.Pages
         public IBigDecimal mPos { get; set; }
         public IBigDecimal mPosi { get; set; }
         public IBigDecimal mSize { get; set; }
+        public int iterationlimit { get; set; }
         public int x { get; set; }
         public int y { get; set; }
         public int horizontalSize { get; set; }
@@ -43,16 +43,29 @@ namespace BlazorMandelbrotDeepzoom.Client.Pages
         IBigDecimalFactory bigDecimalFactory;
         IMathContextFactory mathContextFactory;
 
-        public Canvas()
+        public Canvas(IBigDecimalFactory bigDecimalFactory, IMathContextFactory mathContextFactory)
+        {
+            this.bigDecimalFactory = bigDecimalFactory;
+            this.mathContextFactory = mathContextFactory;
+            SetUp();
+        }
+        public Canvas() 
         {            
             bigDecimalFactory = new BigDecimalFactory();
             mathContextFactory = new MathContextFactory();
+            SetUp();
+        }
+
+        public void SetUp()
+        {
             mandelbrot = new Mandelbrot.Mandelbrot(width, height, bigDecimalFactory, mathContextFactory);
 
             mSize = bigDecimalFactory.FromDouble(3.0);
             mPos = bigDecimalFactory.FromDouble(-0.75); //, mathContextFactory.BigDecimal128());
             mPosi = bigDecimalFactory.FromDouble(0); //, mathContextFactory.BigDecimal128());
+            iterationlimit = 1024;
         }
+
         protected override async Task OnAfterRenderAsync(bool firstRender)
         {
             if (firstRender)
@@ -78,17 +91,36 @@ namespace BlazorMandelbrotDeepzoom.Client.Pages
         [Inject]
         public HttpClient httpClient { get; set; }
 
+        
         public async Task ServerGenerate()
+        {                        
+            await jSRuntime.InvokeVoidAsync("canvasInterop.fetchAndDraw", mPos.ToString(), mPosi.ToString(), mSize.ToString(), iterationlimit);
+        }
+
+        public async Task ServerGenerateOld()
         {
-            var pixels = await httpClient.GetJsonAsync<byte[]>($"Mandelbrot?pos={mPos}&posi={mPosi}&size={mSize}");
-            this.image = pixels;
-            await jSRuntime.InvokeAsync<string>("canvasInterop.drawPixelsString", pixels);
+            var mandelbrotImageDTO = await httpClient.GetJsonAsync<MandelbrotImageDTO>($"Mandelbrot?pos={mPos}&posi={mPosi}&size={mSize}&iterationlimit={iterationlimit}");
+            image = mandelbrotImageDTO.Image;
+            iterationlimit = mandelbrotImageDTO.NewIterationLimit;
+            await jSRuntime.InvokeAsync<string>("canvasInterop.drawPixelsString", image);
+        }
+
+        /// <summary>
+        /// Is called from JavaScript when server-side calculation is finished
+        /// </summary>
+        /// <param name="newIterationLimit"></param>
+        [JSInvokable]
+        public void NewIterationLimit(int newIterationLimit)
+        {
+            iterationlimit = newIterationLimit;
+            StateHasChanged();
         }
         public async Task Generate()
         {
 
             // var result = mandelbrot.Generate(0, 0, 0);
-            var result = mandelbrot.DoCalculation(SuperSampleType.SUPER_SAMPLE_NONE, mSize, mPos, mPosi);
+            this.iterationlimit = mandelbrot.GetNewIterationLimit(iterationlimit);
+            var result = mandelbrot.DoCalculation(SuperSampleType.SUPER_SAMPLE_NONE, mSize, mPos, mPosi, iterationlimit);
             fractal = result.mBuffer;
             var palette = new SFTPaletteOld();
             var imageBuilder = new ImageBuilder();
@@ -115,11 +147,6 @@ namespace BlazorMandelbrotDeepzoom.Client.Pages
             StateHasChanged();
         }
 
-        public void SetMaxIterations()
-        {
-
-        }
-
         public void SetCoordsClicked()
         {
             SetCoords(new Rect
@@ -139,8 +166,6 @@ namespace BlazorMandelbrotDeepzoom.Client.Pages
                 //s = (mDragged_size * 768) / 1024 / 2;
                 //if (y - mSelected_y < s && mSelected_y - y < s)
                 {
-                    SetMaxIterations();
-
                     // double x_mul = x * 1.0 / mResolution_y - mResolution_x * 0.5 / mResolution_y;
                     double x_mul = rect.startX * 1.0 / this.height - this.width * 0.5 / this.height;
                     // double y_mul = (0.5 * mResolution_y - mSelected_y) / mResolution_y;
@@ -158,7 +183,7 @@ namespace BlazorMandelbrotDeepzoom.Client.Pages
                     mPos = mPos.Add(x_offset);
                     mPosi = mPosi.Add(y_offset);
                     // mSize = mSize.Mul(new BigDecimal(mDragged_size / 1024.0));
-                    mSize = mSize.Mul(new BigDecimal((double)rect.w / this.width));
+                    mSize = mSize.Mul(bigDecimalFactory.FromDouble((double)rect.w / this.width));
 
                     int newScale = 6 - mSize.JavaPrecision() + mSize.JavaScale();
                     mSize = mSize.SetJavaScale(newScale, BigDecimalRoundingEnum.HALF_UP);
