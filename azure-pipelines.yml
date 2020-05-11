@@ -18,20 +18,22 @@ pool:
   vmImage: 'windows-latest'
 
 variables:
-  solution: '**/*.sln'
+  solution: 'cveld/blazor-mandelbrot-deepzoom/**/*.sln'
   buildPlatform: 'Any CPU'
   buildConfiguration: 'Release'
 
 steps:
 - checkout: self
+  path: cveld/blazor-mandelbrot-deepzoom
 - checkout: Canvas
+  path: BlazorExtensions/Canvas
 - task: PowerShell@2
   inputs:
     targetType: 'inline'
     script: |
       dir -Recurse
-      ((Get-Content -path BlazorMandelbrotDeepzoom\BlazorMandelbrotDeepzoom\Client\BlazorMandelbrotDeepzoom.Client.csproj -Raw) -replace '..\..\..\..\..\BlazorExtensions\Canvas\src\Blazor.Extensions.Canvas\Blazor.Extensions.Canvas.csproj','..\..\..\src\Blazor.Extensions.Canvas\Blazor.Extensions.Canvas.csproj') | Set-Content -Path C:\ReplaceDemo.txt      
-
+      ((Get-Content -path blazor-mandelbrot-deepzoom\BlazorMandelbrotDeepzoom\BlazorMandelbrotDeepzoom\Client\BlazorMandelbrotDeepzoom.Client.csproj -Raw) -replace '..\..\..\..\..\BlazorExtensions\Canvas\src\Blazor.Extensions.Canvas\Blazor.Extensions.Canvas.csproj','..\..\..\..\Canvas\src\Blazor.Extensions.Canvas\Blazor.Extensions.Canvas.csproj') | Set-Content -Path C:\ReplaceDemo.txt      
+  enabled: false
 - task: NuGetToolInstaller@1
 
 - task: NuGetCommand@2
