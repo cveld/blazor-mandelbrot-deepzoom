@@ -18,7 +18,7 @@ pool:
   vmImage: 'windows-latest'
 
 variables:
-  solution: 'cveld/blazor-mandelbrot-deepzoom/**/*.sln'
+  solution: '$(Agent.BuildDirectory)/cveld/blazor-mandelbrot-deepzoom/**/*.sln'
   buildPlatform: 'Any CPU'
   buildConfiguration: 'Release'
 
