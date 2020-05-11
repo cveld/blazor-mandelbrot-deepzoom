@@ -29,6 +29,7 @@ steps:
   inputs:
     targetType: 'inline'
     script: |
+      dir -Recursive
       ((Get-Content -path BlazorMandelbrotDeepzoom\BlazorMandelbrotDeepzoom\Client\BlazorMandelbrotDeepzoom.Client.csproj -Raw) -replace '..\..\..\..\..\BlazorExtensions\Canvas\src\Blazor.Extensions.Canvas\Blazor.Extensions.Canvas.csproj','..\..\..\src\Blazor.Extensions.Canvas\Blazor.Extensions.Canvas.csproj') | Set-Content -Path C:\ReplaceDemo.txt      
 
 - task: NuGetToolInstaller@1
