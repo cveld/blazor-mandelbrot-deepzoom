@@ -12,6 +12,7 @@ resources:
       type: github
       name: cveld/Canvas
       ref: refs/heads/feature/CanvasRef
+      endpoint: github.com_cveld
 
 pool:
   vmImage: 'windows-latest'
