@@ -1,6 +1,4 @@
 ﻿using BigDecimalContracts;
-using BlazorMandelbrotDeepzoom.Client.Models;
-using BlazorMandelbrotDeepzoom.Client.Pages;
 using Mandelbrot;
 using SixLabors.ImageSharp;
 using System;

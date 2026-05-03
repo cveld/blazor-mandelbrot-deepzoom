@@ -1,7 +1,6 @@
 using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using System.Text;
+using System.Net.Http;
+using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -9,12 +8,15 @@ namespace BlazorMandelbrotDeepzoom.Client
 {
     public class Program
     {
-        public static async Task Main(string[] args)
+        public static async System.Threading.Tasks.Task Main(string[] args)
         {
             var builder = WebAssemblyHostBuilder.CreateDefault(args);
             builder.RootComponents.Add<App>("app");
 
-            builder.Services.AddBaseAddressHttpClient();
+            builder.Services.AddScoped(sp => new HttpClient
+            {
+                BaseAddress = new Uri(builder.HostEnvironment.BaseAddress)
+            });
 
             await builder.Build().RunAsync();
         }

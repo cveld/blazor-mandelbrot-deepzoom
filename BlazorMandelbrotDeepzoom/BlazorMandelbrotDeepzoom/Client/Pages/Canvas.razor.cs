@@ -1,7 +1,4 @@
 ﻿using BigDecimalDParker;
-using Blazor.Extensions;
-using Blazor.Extensions.Canvas.Canvas2D;
-using Blazor.Extensions.Canvas.WebGL;
 using Mandelbrot;
 using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
@@ -12,6 +9,7 @@ using System.Threading.Tasks;
 using BlazorMandelbrotDeepzoom.Shared;
 using System.Globalization;
 using System.Net.Http;
+using System.Net.Http.Json;
 using BlazorMandelbrotDeepzoom.Client.Models;
 using BigDecimalContracts;
 
@@ -19,20 +17,19 @@ namespace BlazorMandelbrotDeepzoom.Client.Pages
 {
     public partial class Canvas : ComponentBase
     {                       
-        private Canvas2DContext _context;
-        private WebGLContext _webGLContext;
-
-        protected BECanvasComponent _canvasReference;
         private DotNetObjectReference<Canvas> _objRef;
 
         private Mandelbrot.Mandelbrot mandelbrot;
+        public IBigDecimal currentPos { get; set; }
+        public IBigDecimal currentPosi { get; set; }
+        public IBigDecimal currentSize { get; set; }
         public IBigDecimal mPos { get; set; }
         public IBigDecimal mPosi { get; set; }
         public IBigDecimal mSize { get; set; }
         public int iterationlimit { get; set; }
         public int x { get; set; }
         public int y { get; set; }
-        public int horizontalSize { get; set; }
+        public int selectedSize { get; set; }
 
 
         [Inject]
@@ -43,14 +40,8 @@ namespace BlazorMandelbrotDeepzoom.Client.Pages
         IBigDecimalFactory bigDecimalFactory;
         IMathContextFactory mathContextFactory;
 
-        public Canvas(IBigDecimalFactory bigDecimalFactory, IMathContextFactory mathContextFactory)
+        public Canvas()
         {
-            this.bigDecimalFactory = bigDecimalFactory;
-            this.mathContextFactory = mathContextFactory;
-            SetUp();
-        }
-        public Canvas() 
-        {            
             bigDecimalFactory = new BigDecimalFactory();
             mathContextFactory = new MathContextFactory();
             SetUp();
@@ -61,8 +52,11 @@ namespace BlazorMandelbrotDeepzoom.Client.Pages
             mandelbrot = new Mandelbrot.Mandelbrot(width, height, bigDecimalFactory, mathContextFactory);
 
             mSize = bigDecimalFactory.FromDouble(3.0);
-            mPos = bigDecimalFactory.FromDouble(-0.75); //, mathContextFactory.BigDecimal128());
-            mPosi = bigDecimalFactory.FromDouble(0); //, mathContextFactory.BigDecimal128());
+            mPos = bigDecimalFactory.FromDouble(-0.75);
+            mPosi = bigDecimalFactory.FromDouble(0);
+            currentPos = mPos;
+            currentPosi = mPosi;
+            currentSize = mSize;
             iterationlimit = 1024;
         }
 
@@ -71,14 +65,7 @@ namespace BlazorMandelbrotDeepzoom.Client.Pages
             if (firstRender)
             {
                 _objRef = DotNetObjectReference.Create(this);
-                _context = await this._canvasReference.CreateCanvas2DAsync();
-                //await this._context.SetFillStyleAsync("green");
-
-                //await this._context.FillRectAsync(10, 100, 100, 100);
-
-                //await this._context.SetFontAsync("48px serif");
-                //await this._context.StrokeTextAsync("Hello Blazor!!!", 10, 100);
-                await jSRuntime.InvokeVoidAsync("canvasInterop.init", _canvasReference.Id, _objRef, width, height);
+                await jSRuntime.InvokeVoidAsync("canvasInterop.init", "mandelbrot-canvas", _objRef, width, height);
             }
         }
 
@@ -93,13 +80,18 @@ namespace BlazorMandelbrotDeepzoom.Client.Pages
 
         
         public async Task ServerGenerate()
-        {                        
+        {
+            if (selectedSize > 0)
+                SetCoords(new Rect { startX = x, startY = y, w = selectedSize });
             await jSRuntime.InvokeVoidAsync("canvasInterop.fetchAndDraw", mPos.ToString(), mPosi.ToString(), mSize.ToString(), iterationlimit);
+            currentPos = mPos;
+            currentPosi = mPosi;
+            currentSize = mSize;
         }
 
         public async Task ServerGenerateOld()
         {
-            var mandelbrotImageDTO = await httpClient.GetJsonAsync<MandelbrotImageDTO>($"Mandelbrot?pos={mPos}&posi={mPosi}&size={mSize}&iterationlimit={iterationlimit}");
+            var mandelbrotImageDTO = await httpClient.GetFromJsonAsync<MandelbrotImageDTO>($"Mandelbrot?pos={mPos}&posi={mPosi}&size={mSize}&iterationlimit={iterationlimit}");
             image = mandelbrotImageDTO.Image;
             iterationlimit = mandelbrotImageDTO.NewIterationLimit;
             await jSRuntime.InvokeAsync<string>("canvasInterop.drawPixelsString", image);
@@ -117,8 +109,8 @@ namespace BlazorMandelbrotDeepzoom.Client.Pages
         }
         public async Task Generate()
         {
-
-            // var result = mandelbrot.Generate(0, 0, 0);
+            if (selectedSize > 0)
+                SetCoords(new Rect { startX = x, startY = y, w = selectedSize });
             this.iterationlimit = mandelbrot.GetNewIterationLimit(iterationlimit);
             var result = mandelbrot.DoCalculation(SuperSampleType.SUPER_SAMPLE_NONE, mSize, mPos, mPosi, iterationlimit);
             fractal = result.mBuffer;
@@ -129,7 +121,10 @@ namespace BlazorMandelbrotDeepzoom.Client.Pages
             //var image = result.MakeTexture(imageBuilder, palette, SuperSampleType.SUPER_SAMPLE_NONE) as BufferedImage;
             this.image = image.image;
             var text =
-                await jSRuntime.InvokeAsync<string>("canvasInterop.drawPixelsString", image.image);            
+                await jSRuntime.InvokeAsync<string>("canvasInterop.drawPixelsString", image.image);
+            currentPos = mPos;
+            currentPosi = mPosi;
+            currentSize = mSize;
         }
 
         public void Test()
@@ -143,7 +138,7 @@ namespace BlazorMandelbrotDeepzoom.Client.Pages
         {
             x = rect.startX;
             y = rect.startY;
-            horizontalSize = rect.w;            
+            selectedSize = rect.w;            
             StateHasChanged();
         }
 
@@ -153,7 +148,7 @@ namespace BlazorMandelbrotDeepzoom.Client.Pages
             {
                 startX = x,
                 startY = y,
-                w = horizontalSize
+                w = selectedSize
             });
         }
 
@@ -171,19 +166,18 @@ namespace BlazorMandelbrotDeepzoom.Client.Pages
                     // double y_mul = (0.5 * mResolution_y - mSelected_y) / mResolution_y;
                     double y_mul = (0.5 * this.height - rect.startY) / this.height;
 
-                    IBigDecimal x_offset = mSize.Mul(bigDecimalFactory.FromDouble(x_mul));
-                    IBigDecimal y_offset = mSize.Mul(bigDecimalFactory.FromDouble(y_mul));
+                    IBigDecimal x_offset = currentSize.Mul(bigDecimalFactory.FromDouble(x_mul));
+                    IBigDecimal y_offset = currentSize.Mul(bigDecimalFactory.FromDouble(y_mul));
 
-                    int size_scale = mSize.JavaScale();
+                    int size_scale = currentSize.JavaScale();
                     if (x_offset.JavaScale() > size_scale + 4)
                         x_offset = x_offset.SetJavaScale(size_scale + 4, BigDecimalRoundingEnum.ROUND_HALF_DOWN);
                     if (y_offset.JavaScale() > size_scale + 4)
                         y_offset = y_offset.SetJavaScale(size_scale + 4, BigDecimalRoundingEnum.ROUND_HALF_DOWN);
 
-                    mPos = mPos.Add(x_offset);
-                    mPosi = mPosi.Add(y_offset);
-                    // mSize = mSize.Mul(new BigDecimal(mDragged_size / 1024.0));
-                    mSize = mSize.Mul(bigDecimalFactory.FromDouble((double)rect.w / this.width));
+                    mPos = currentPos.Add(x_offset);
+                    mPosi = currentPosi.Add(y_offset);
+                    mSize = currentSize.Mul(bigDecimalFactory.FromDouble((double)(2 * rect.w) / this.width));
 
                     int newScale = 6 - mSize.JavaPrecision() + mSize.JavaScale();
                     mSize = mSize.SetJavaScale(newScale, BigDecimalRoundingEnum.HALF_UP);

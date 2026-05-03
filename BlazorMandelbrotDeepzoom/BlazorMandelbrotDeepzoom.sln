@@ -11,10 +11,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlazorMandelbrotDeepzoom.Sh
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mandelbrot", "Mandelbrot\Mandelbrot.csproj", "{27DF1403-AE8A-4B7F-BEF1-DA9FF52DD52C}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Blazor.Extensions.Canvas", "..\..\..\BlazorExtensions\Canvas\src\Blazor.Extensions.Canvas\Blazor.Extensions.Canvas.csproj", "{C90A418E-D0FF-400C-9605-BF22FCE2A8D3}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Blazor.Extensions.Canvas.JS", "..\..\..\BlazorExtensions\Canvas\src\Blazor.Extensions.Canvas.JS\Blazor.Extensions.Canvas.JS.csproj", "{3969A92A-17A0-4016-B7B0-88B23A0DDEBE}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BigDecimalContracts", "BigDecimalContracts\BigDecimalContracts.csproj", "{0E183B96-244C-46C3-8333-13649E180115}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BigDecimalDParker", "BigDecimalDParker\BigDecimalDParker.csproj", "{5FEBA96A-E741-4E59-B0D1-2B82A35EE791}"
@@ -47,14 +43,6 @@ Global
 		{27DF1403-AE8A-4B7F-BEF1-DA9FF52DD52C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{27DF1403-AE8A-4B7F-BEF1-DA9FF52DD52C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{27DF1403-AE8A-4B7F-BEF1-DA9FF52DD52C}.Release|Any CPU.Build.0 = Release|Any CPU
-		{C90A418E-D0FF-400C-9605-BF22FCE2A8D3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{C90A418E-D0FF-400C-9605-BF22FCE2A8D3}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{C90A418E-D0FF-400C-9605-BF22FCE2A8D3}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{C90A418E-D0FF-400C-9605-BF22FCE2A8D3}.Release|Any CPU.Build.0 = Release|Any CPU
-		{3969A92A-17A0-4016-B7B0-88B23A0DDEBE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{3969A92A-17A0-4016-B7B0-88B23A0DDEBE}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{3969A92A-17A0-4016-B7B0-88B23A0DDEBE}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{3969A92A-17A0-4016-B7B0-88B23A0DDEBE}.Release|Any CPU.Build.0 = Release|Any CPU
 		{0E183B96-244C-46C3-8333-13649E180115}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{0E183B96-244C-46C3-8333-13649E180115}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0E183B96-244C-46C3-8333-13649E180115}.Release|Any CPU.ActiveCfg = Release|Any CPU

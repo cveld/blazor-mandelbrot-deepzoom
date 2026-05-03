@@ -1,10 +1,5 @@
 ﻿import { base64ToArrayBuffer } from "./Utility";
 
-declare namespace BlazorExtensions {
-    class Canvas2d {
-        static getContext(canvas: { id }): CanvasRenderingContext2D;
-    }
-}
 declare class DotNet {
     static invokeMethodAsync(...args: any[]);
 }
@@ -64,13 +59,11 @@ export class MandelbrotCanvas {
         });
     }
 
-    init(id: number, dotnetobjref, xw, yw) {
+    init(id: string, dotnetobjref, xw, yw) {
         this.xw = xw;
-        this.yw = yw;        
+        this.yw = yw;
         this.dotnetobjref = dotnetobjref;
-        this.ctx = BlazorExtensions.Canvas2d.getContext({
-            id: id
-        });
+        this.ctx = (document.getElementById(id) as HTMLCanvasElement).getContext('2d');
         this.ctx.canvas.addEventListener('mousedown', (e) => this.mouseDown(e), false);
         this.ctx.canvas.addEventListener('mouseup', (e) => this.mouseUp(e), false);
         this.ctx.canvas.addEventListener('mousemove', (e) => this.mouseMove(e), false);
