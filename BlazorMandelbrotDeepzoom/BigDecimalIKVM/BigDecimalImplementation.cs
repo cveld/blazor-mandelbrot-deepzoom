@@ -109,5 +109,15 @@ namespace BigDecimalIKVM
         {
             return new BigDecimalImplementation(this.bigDecimal.subtract((bd as BigDecimalImplementation?).Value.bigDecimal, (mathContext as MathContextImplementation).mathContext));
         }
+
+        public IBigDecimal Div(IBigDecimal bd)
+        {
+            return new BigDecimalImplementation(this.bigDecimal.divide((bd as BigDecimalImplementation?).Value.bigDecimal));
+        }
+
+        public IBigDecimal Div(IBigDecimal bd, IMathContext mathContext)
+        {
+            return new BigDecimalImplementation(this.bigDecimal.divide((bd as BigDecimalImplementation?).Value.bigDecimal, (mathContext as MathContextImplementation).mathContext));
+        }
     }
 }

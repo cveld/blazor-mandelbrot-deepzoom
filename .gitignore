@@ -352,3 +352,6 @@ MigrationBackup/
 # Claude
 .claude/settings.json
 .claude/settings.local.json
+
+# language server
+*.lscache

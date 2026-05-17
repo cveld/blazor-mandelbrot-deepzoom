@@ -111,6 +111,10 @@ export class MandelbrotCanvas {
         }
     }
 
+    getCanvasDataUrl(): string {
+        return this.ctx.canvas.toDataURL('image/png');
+    }
+
     destroy() {
         this.ctx.canvas.removeEventListener('mousedown', this.mouseDown);
         this.ctx.canvas.removeEventListener('mouseup', this.mouseDown);

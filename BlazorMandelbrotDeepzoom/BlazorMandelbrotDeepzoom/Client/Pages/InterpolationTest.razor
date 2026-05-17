@@ -1,0 +1,158 @@
+@page "/interpolationtest"
+@using BlazorMandelbrotDeepzoom.Shared
+
+<h3>Interpolation Test</h3>
+
+<div class="d-flex" style="gap: 2rem; align-items: flex-start; flex-wrap: wrap;">
+    <div style="min-width: 460px;">
+        <div class="row">
+            <div class="col-6">
+                <h5>Source</h5>
+                <div class="form-group">
+                    <label>POI</label>
+                    <select class="form-control" @onchange="OnSourcePoiChanged">
+                        <option value="">-- Handmatig --</option>
+                        @foreach (var poi in pois)
+                        {
+                            <option value="@poi.Id">@(poi.Name ?? poi.Id)</option>
+                        }
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Real</label>
+                    <input class="form-control" @bind="sourceReal" />
+                </div>
+                <div class="form-group">
+                    <label>Imaginary</label>
+                    <input class="form-control" @bind="sourceImaginary" />
+                </div>
+                <div class="form-group">
+                    <label>Size</label>
+                    <input class="form-control" @bind="sourceSize" />
+                </div>
+                <div class="form-group">
+                    <label>Iteration limit</label>
+                    <input type="number" class="form-control" min="1" @bind="sourceIterationLimit" />
+                </div>
+            </div>
+            <div class="col-6">
+                <h5>Target</h5>
+                <div class="form-group">
+                    <label>POI</label>
+                    <select class="form-control" @onchange="OnTargetPoiChanged">
+                        <option value="">-- Handmatig --</option>
+                        @foreach (var poi in pois)
+                        {
+                            <option value="@poi.Id">@(poi.Name ?? poi.Id)</option>
+                        }
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Real</label>
+                    <input class="form-control" @bind="targetReal" />
+                </div>
+                <div class="form-group">
+                    <label>Imaginary</label>
+                    <input class="form-control" @bind="targetImaginary" />
+                </div>
+                <div class="form-group">
+                    <label>Size</label>
+                    <input class="form-control" @bind="targetSize" />
+                </div>
+                <div class="form-group">
+                    <label>Iteration limit</label>
+                    <input type="number" class="form-control" min="1" @bind="targetIterationLimit" />
+                </div>
+            </div>
+        </div>
+
+        <div class="mt-3 d-flex align-items-center" style="gap: 1rem;">
+            <div class="form-group mb-0 d-flex align-items-center" style="gap: 0.5rem;">
+                <label class="mb-0">Frames</label>
+                <input type="number" class="form-control" style="width: 80px;" min="2" max="1000" @bind="frameCount" />
+            </div>
+            <button class="btn btn-primary" @onclick="Interpolate">Interpolate</button>
+        </div>
+
+        @if (!string.IsNullOrEmpty(errorMessage))
+        {
+            <div class="alert alert-danger mt-3">@errorMessage</div>
+        }
+    </div>
+
+    <div style="min-width: 180px;">
+        <h5>Render</h5>
+        <div class="form-group">
+            <label>Real</label>
+            <input class="form-control" @bind="renderReal" />
+        </div>
+        <div class="form-group">
+            <label>Imaginary</label>
+            <input class="form-control" @bind="renderImaginary" />
+        </div>
+        <div class="form-group">
+            <label>Size</label>
+            <input class="form-control" @bind="renderSize" />
+        </div>
+        <div class="form-group">
+            <label>Iteration limit</label>
+            <input type="number" class="form-control" min="1" @bind="renderIterationLimit" />
+        </div>
+        <button class="btn btn-primary mt-1" disabled="@isRendering" @onclick="RenderPanel">
+            @if (isRendering) { <span>...</span> } else { <span>Render</span> }
+        </button>
+    </div>
+
+    <div>
+        @if (previewFrameNumber >= 0)
+        {
+            <div class="text-muted mb-1" style="font-size: 0.85em;">Frame @previewFrameNumber</div>
+        }
+        <canvas id="frame-preview-canvas" width="400" height="400"
+                style="border: 1px solid #ccc; display: block; @(previewFrameNumber < 0 ? "opacity: 0.3;" : "")">
+        </canvas>
+        @if (isRendering)
+        {
+            <div class="text-muted mt-1" style="font-size: 0.85em;">Rendering...</div>
+        }
+    </div>
+</div>
+
+@if (frames != null && frames.Count > 0)
+{
+    <div class="mt-4">
+        <h5>Frames (@frames.Count)</h5>
+        <div style="overflow-x: auto;">
+            <table class="table table-sm table-striped">
+                <thead>
+                    <tr>
+                        <th>Frame</th>
+                        <th>Real</th>
+                        <th>Imaginary</th>
+                        <th>Size</th>
+                        <th>Iterations</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var frame in frames)
+                    {
+                        <tr>
+                            <td>@frame.Frame</td>
+                            <td style="font-family: monospace; font-size: 0.8em;">@frame.Real</td>
+                            <td style="font-family: monospace; font-size: 0.8em;">@frame.Imaginary</td>
+                            <td style="font-family: monospace; font-size: 0.8em;">@frame.Size</td>
+                            <td>@frame.IterationLimit</td>
+                            <td>
+                                <button class="btn btn-sm btn-outline-secondary @(generatingFrameNumber == frame.Frame ? "active" : "")"
+                                        @onclick="() => SelectFrame(frame)">
+                                    Render
+                                </button>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+}

@@ -1,0 +1,97 @@
+@page "/pois"
+@using BlazorMandelbrotDeepzoom.Shared
+@inject HttpClient Http
+@inject NavigationManager Nav
+
+<h3>Points of Interest</h3>
+
+@if (points == null)
+{
+    <p>Loading...</p>
+}
+else if (points.Count == 0)
+{
+    <p>No points saved yet.</p>
+}
+else
+{
+    <div class="d-flex flex-wrap" style="gap: 1rem;">
+        @foreach (var point in points)
+        {
+            <div class="card" style="width: 220px;">
+                <div style="cursor: pointer;" @onclick="() => NavigateToCanvas(point)">
+                    @if (point.HasImage)
+                    {
+                        <img src="@point.ImageUrl" class="card-img-top" alt="@point.Name" style="height: 220px; object-fit: cover;" />
+                    }
+                    else
+                    {
+                        <div style="height: 220px; background: #222; display: flex; align-items: center; justify-content: center;">
+                            <span class="text-muted">Geen afbeelding</span>
+                        </div>
+                    }
+                    <div class="card-body p-2">
+                        <h6 class="card-title mb-1">@(point.Name ?? "(naamloos)")</h6>
+                        <small class="text-muted d-block">Re: @point.Real</small>
+                        <small class="text-muted d-block">Im: @point.Imaginary</small>
+                        <small class="text-muted d-block">Size: @FormatSize(point.Size)</small>
+                        <small class="text-muted d-block">Iterations: @point.IterationLimit</small>
+                    </div>
+                </div>
+                <div class="card-footer p-1">
+                    <button class="btn btn-danger btn-sm w-100" @onclick="() => DeletePoint(point)" @onclick:stopPropagation="true">Delete</button>
+                </div>
+            </div>
+        }
+    </div>
+}
+
+@code {
+    private List<InterestingPointSummaryDTO> points;
+
+    protected override async Task OnInitializedAsync()
+    {
+        points = await Http.GetFromJsonAsync<List<InterestingPointSummaryDTO>>("InterestingPoints");
+    }
+
+    private void NavigateToCanvas(InterestingPointSummaryDTO point)
+    {
+        var url = $"/canvas?pos={Uri.EscapeDataString(point.Real ?? "")}" +
+                  $"&posi={Uri.EscapeDataString(point.Imaginary ?? "")}" +
+                  $"&size={Uri.EscapeDataString(point.Size ?? "")}" +
+                  $"&iterationlimit={point.IterationLimit}";
+        Nav.NavigateTo(url);
+    }
+
+    private async Task DeletePoint(InterestingPointSummaryDTO point)
+    {
+        var response = await Http.DeleteAsync($"InterestingPoints/{point.Id}");
+        if (response.IsSuccessStatusCode)
+            points.Remove(point);
+    }
+
+    private string FormatSize(string size)
+    {
+        if (string.IsNullOrWhiteSpace(size)) return size ?? "";
+        var s = size.Trim();
+        if (s.IndexOf('E') >= 0 || s.IndexOf('e') >= 0) return s;
+
+        bool negative = s.StartsWith('-');
+        if (negative) s = s.Substring(1);
+
+        int dotPos = s.IndexOf('.');
+        string intPart = dotPos >= 0 ? s.Substring(0, dotPos) : s;
+        string fracPart = dotPos >= 0 ? s.Substring(dotPos + 1) : "";
+
+        string allDigits = intPart + fracPart;
+        int firstSig = 0;
+        while (firstSig < allDigits.Length && allDigits[firstSig] == '0')
+            firstSig++;
+        if (firstSig == allDigits.Length) return "0";
+
+        int exponent = intPart.Length - 1 - firstSig;
+        string sigDigits = allDigits.Substring(firstSig).TrimEnd('0');
+        string mantissa = sigDigits.Length == 1 ? sigDigits : sigDigits[0] + "." + sigDigits.Substring(1);
+        return $"{(negative ? "-" : "")}{mantissa}E{(exponent >= 0 ? "+" : "")}{exponent}";
+    }
+}

@@ -190,9 +190,10 @@ namespace BigDecimalsDParker
 
         private static BigDecimal Div(BigDecimal left, BigDecimal right, int maxPrecision)
         {
+            bool negative = (left.Value.Sign < 0) != (right.Value.Sign < 0);
             BigDecimal result = new BigDecimal(new BigInteger(0), left.Precision - right.Precision, maxPrecision);
-            BigInteger leftVal = left.Value, rightVal = right.Value, division;
-            while (result.Precision < result.MaxPrecision && leftVal != ZERO)
+            BigInteger leftVal = BigInteger.Abs(left.Value), rightVal = BigInteger.Abs(right.Value), division;
+            while (leftVal != ZERO && (result.Precision < result.MaxPrecision || leftVal >= rightVal))
             {
                 if (leftVal < rightVal)
                 {
@@ -202,8 +203,8 @@ namespace BigDecimalsDParker
                 division = leftVal / rightVal;
                 result.Value = (result.Value * TEN) + division;
                 leftVal -= division * rightVal;
-
             }
+            if (negative) result.Value = -result.Value;
             result.Clean();
             return result;
         }
@@ -522,6 +523,16 @@ namespace BigDecimalsDParker
         public IBigDecimal Sub(IBigDecimal bd, IMathContext mathContext)
         {
             return Sub(this, bd as BigDecimal, (mathContext as MathContext).Precision);
+        }
+
+        public IBigDecimal Div(IBigDecimal bd)
+        {
+            return this / (bd as BigDecimal);
+        }
+
+        public IBigDecimal Div(IBigDecimal bd, IMathContext mathContext)
+        {
+            return Div(this, bd as BigDecimal, (mathContext as MathContext).Precision);
         }
 
         IBigDecimal IBigDecimal.MovePointLeft(int i)

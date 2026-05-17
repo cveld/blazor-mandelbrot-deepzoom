@@ -1,0 +1,14 @@
+<Project Sdk="Aspire.AppHost.Sdk/13.3.3">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net10.0</TargetFramework>
+<Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Aspire.Hosting.JavaScript" Version="13.3.3" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\BlazorMandelbrotDeepzoom\Server\BlazorMandelbrotDeepzoom.Server.csproj" IsAspireProjectResource="true" />
+  </ItemGroup>
+</Project>

@@ -1,0 +1,8 @@
+{
+  "appHost": {
+    "path": "BlazorMandelbrotDeepzoom.AppHost.csproj"
+  },
+  "features": {
+    "defaultWatchEnabled": "true"
+  }
+}

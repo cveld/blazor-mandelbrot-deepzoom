@@ -81,8 +81,8 @@ namespace BlazorMandelbrotDeepzoom.Client.Pages
         
         public async Task ServerGenerate()
         {
-            if (selectedSize > 0)
-                SetCoords(new Rect { startX = x, startY = y, w = selectedSize });
+            //if (selectedSize > 0)
+            //    SetCoords(new Rect { startX = x, startY = y, w = selectedSize });
             await jSRuntime.InvokeVoidAsync("canvasInterop.fetchAndDraw", mPos.ToString(), mPosi.ToString(), mSize.ToString(), iterationlimit);
             currentPos = mPos;
             currentPosi = mPosi;
@@ -107,7 +107,7 @@ namespace BlazorMandelbrotDeepzoom.Client.Pages
             iterationlimit = newIterationLimit;
             StateHasChanged();
         }
-        public async Task Generate()
+        public async Task ClientGenerate()
         {
             if (selectedSize > 0)
                 SetCoords(new Rect { startX = x, startY = y, w = selectedSize });
@@ -188,6 +188,64 @@ namespace BlazorMandelbrotDeepzoom.Client.Pages
 
                 }
             }
+        }
+
+        [Parameter]
+        [SupplyParameterFromQuery(Name = "pos")]
+        public string QueryPos { get; set; }
+
+        [Parameter]
+        [SupplyParameterFromQuery(Name = "posi")]
+        public string QueryPosi { get; set; }
+
+        [Parameter]
+        [SupplyParameterFromQuery(Name = "size")]
+        public string QuerySize { get; set; }
+
+        [Parameter]
+        [SupplyParameterFromQuery(Name = "iterationlimit")]
+        public int? QueryIterationLimit { get; set; }
+
+        protected override void OnParametersSet()
+        {
+            if (!string.IsNullOrEmpty(QueryPos))
+                mPos = bigDecimalFactory.FromString(QueryPos);
+            if (!string.IsNullOrEmpty(QueryPosi))
+                mPosi = bigDecimalFactory.FromString(QueryPosi);
+            if (!string.IsNullOrEmpty(QuerySize))
+                mSize = bigDecimalFactory.FromString(QuerySize);
+            if (QueryIterationLimit.HasValue)
+                iterationlimit = QueryIterationLimit.Value;
+        }
+
+        public string interestingPointName { get; set; }
+        private string saveMessage;
+        private bool saveSuccess;
+
+        public async Task SaveInterestingPoint()
+        {
+            var imageDataUrl = await jSRuntime.InvokeAsync<string>("canvasInterop.getCanvasDataUrl");
+            var dto = new BlazorMandelbrotDeepzoom.Shared.InterestingPointDTO
+            {
+                Name = interestingPointName,
+                Real = currentPos?.ToString(),
+                Imaginary = currentPosi?.ToString(),
+                Size = currentSize?.ToString(),
+                IterationLimit = iterationlimit,
+                ImageDataUrl = imageDataUrl
+            };
+            try
+            {
+                var response = await httpClient.PostAsJsonAsync("InterestingPoints", dto);
+                saveSuccess = response.IsSuccessStatusCode;
+                saveMessage = saveSuccess ? "Opgeslagen!" : "Fout bij opslaan.";
+            }
+            catch
+            {
+                saveSuccess = false;
+                saveMessage = "Fout bij opslaan.";
+            }
+            StateHasChanged();
         }
 
         public void listFromChanged(ChangeEventArgs e)

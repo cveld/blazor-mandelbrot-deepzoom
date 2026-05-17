@@ -1,0 +1,122 @@
+@page "/moviemaker"
+@using BlazorMandelbrotDeepzoom.Shared
+@implements IAsyncDisposable
+
+<h3>Movie Maker</h3>
+
+<div class="d-flex" style="gap: 2rem; align-items: flex-start; flex-wrap: wrap;">
+    <div style="min-width: 460px;">
+        <div class="row">
+            <div class="col-6">
+                <h5>Start</h5>
+                <div class="form-group">
+                    <label>POI</label>
+                    <select class="form-control" @onchange="OnStartPoiChanged">
+                        <option value="">-- Handmatig --</option>
+                        @foreach (var poi in pois)
+                        {
+                            <option value="@poi.Id">@(poi.Name ?? poi.Id)</option>
+                        }
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Real</label>
+                    <input class="form-control" @bind="startReal" />
+                </div>
+                <div class="form-group">
+                    <label>Imaginary</label>
+                    <input class="form-control" @bind="startImaginary" />
+                </div>
+                <div class="form-group">
+                    <label>Size</label>
+                    <input class="form-control" @bind="startSize" />
+                </div>
+            </div>
+            <div class="col-6">
+                <h5>End</h5>
+                <div class="form-group">
+                    <label>POI</label>
+                    <select class="form-control" @onchange="OnEndPoiChanged">
+                        <option value="">-- Handmatig --</option>
+                        @foreach (var poi in pois)
+                        {
+                            <option value="@poi.Id">@(poi.Name ?? poi.Id)</option>
+                        }
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Real</label>
+                    <input class="form-control" @bind="endReal" />
+                </div>
+                <div class="form-group">
+                    <label>Imaginary</label>
+                    <input class="form-control" @bind="endImaginary" />
+                </div>
+                <div class="form-group">
+                    <label>Size</label>
+                    <input class="form-control" @bind="endSize" />
+                </div>
+            </div>
+        </div>
+
+        <div class="row mt-2">
+            <div class="col-4">
+                <div class="form-group">
+                    <label>Frames</label>
+                    <input class="form-control" type="number" @bind="frameCount" min="1" max="600" />
+                </div>
+            </div>
+            <div class="col-4">
+                <div class="form-group">
+                    <label>FPS</label>
+                    <input class="form-control" type="number" @bind="fps" min="1" max="60" />
+                </div>
+            </div>
+            <div class="col-4">
+                <div class="form-group">
+                    <label>Iteration limit</label>
+                    <input class="form-control" type="number" @bind="iterationLimit" />
+                </div>
+            </div>
+        </div>
+
+        <div class="mt-3">
+            <button class="btn btn-primary" @onclick="StartGeneration" disabled="@isGenerating">Generate</button>
+        </div>
+
+        @if (isGenerating || currentFrame > 0)
+        {
+            <div class="mt-3">
+                <div class="progress">
+                    <div class="progress-bar" role="progressbar" style="width: @ProgressPercent%">
+                        @currentFrame / @totalFrames
+                    </div>
+                </div>
+            </div>
+        }
+
+        @if (!string.IsNullOrEmpty(statusMessage))
+        {
+            <p class="mt-2 text-muted">@statusMessage</p>
+        }
+
+        @if (!string.IsNullOrEmpty(downloadUrl))
+        {
+            <a href="@downloadUrl" download="mandelbrot.webm" class="btn btn-success mt-2">Download video</a>
+        }
+
+        @if (!string.IsNullOrEmpty(errorMessage))
+        {
+            <div class="alert alert-danger mt-3">@errorMessage</div>
+        }
+    </div>
+
+    <div>
+        <h5>Preview</h5>
+        <canvas id="movie-preview-canvas" width="400" height="400" style="border: 1px solid #ccc; background: #000;"></canvas>
+    </div>
+</div>
+
+@code {
+    private int ProgressPercent => totalFrames > 0 ? currentFrame * 100 / totalFrames : 0;
+}
